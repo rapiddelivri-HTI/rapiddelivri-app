@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rapid Delivri Food</title>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+</head>
+<body style="margin:0;padding:0;background:#EEF2FF;">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+
+
+const LOGO_IMG = "data:image/jpeg;base64,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sf7HTtY4jBed7j5yplGdnD4RlRqNLoszrbnL3YRU71a6i16Jgp+LuXElRs8BnPqBwFFaPqqOjvjZK1zWNLHNY93Brjjj0bsjK6fJGyWN0cjGvY4Yc1wyCFW6zRFrncXwOmpieZjst9BUSqaacfUX0/aNcqp1X5W7PK9pYG1VO5u02eIt6Q8YUBqTUtDTUM1NTTMnqZGFgaw5DcjGSeHmWj4AQZ33CTH/AEh71vUmibVA4OmM1QRzPdhvoCs3Y1jGDnhDQ1yUpTcserGCo6Xs81zucT9gimheHSP5t2/ZHWVId0Cr5W6w0rTugjyf3nb/AGAK/wAEEVPE2KCNkcbRgNaMAKBuGkKC4V0tXPUVXKSuyQHNwOoblV1NQ2xOmHacLNUrreElwjW0M2npLKZZZomyVEhdgvAOBuHsPpU1WX210cZdNWw5HzWuDnHzBQ3gHa/rFX95vuWSLQ9oYcudUydTpAB6grR3pYSMLno7bXZKb59WP9lMvFbJfb2+WngeTJhkUYGXEDh51fLTYIotNttle3b5Q7coa4jxic4BHRgKRoLVQ25uKKmjiJ4uAy49pO9biQqw25dSur7Q7yEaqltjHp58Ff8AAyx/Vn/iu96eBlj+rSfiu96sCK/dx8jl8bqPtv4sr/gZY/qz/wAV3vTwMsf1Z/4rverAid3HyHjdR9t/FkA3R1ja4HvZ5weeV3vU8AAABwC+orKKXQysust+vJv3hERSZhERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAf/9k=";
+const LogoSVG = ({ height = 50, style = {} }) => (
+  <img src={LOGO_IMG} alt="Rapid Delivri Food" style={{ height, width: "auto", display: "block", ...style }} />
+);
+
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const RESTAURANTS = [
+  {
+    id: 1, name: "Kay Manman", cuisine: "Manje Ayisyen Tradisyonèl",
+    rating: 4.8, time: "25-35 min", fee: 2.99, image: "🍲", tax: 0.07,
+    color: "#E63946", lat: 39.7684, lng: -86.1581,
+    items: [
+      { id: 1, name: "Griot ak Bannann", price: 14.99, desc: "Griot fri ak bannann peze ak piklis", emoji: "🥩" },
+      { id: 2, name: "Diri ak Djondjon", price: 12.99, desc: "Diri nwa ak pwa wouj", emoji: "🍚" },
+      { id: 3, name: "Soup Joumou", price: 9.99, desc: "Soup tradisyonèl ayisyen", emoji: "🥣" },
+      { id: 4, name: "Tassot Cabrit", price: 16.99, desc: "Kabrit fri ak epis", emoji: "🍖" },
+      { id: 5, name: "Akra", price: 7.99, desc: "Fritay malanga ak areng", emoji: "🥘" },
+    ],
+  },
+  {
+    id: 2, name: "Lakay Restaurant", cuisine: "Kreyo Ayisyen",
+    rating: 4.6, time: "30-45 min", fee: 3.49, image: "🏠", tax: 0.07,
+    color: "#2D6A4F", lat: 39.7820, lng: -86.1480,
+    items: [
+      { id: 6, name: "Poul ak Nwa", price: 13.99, desc: "Poul mijoté ak nwa ak epis", emoji: "🍗" },
+      { id: 7, name: "Legim", price: 11.99, desc: "Legim ayisyen ak kramann", emoji: "🥦" },
+      { id: 8, name: "Lalo ak Kramann", price: 15.99, desc: "Lalo fri ak kramann souse", emoji: "🦀" },
+      { id: 9, name: "Pain Patate", price: 6.99, desc: "Pen patat dous", emoji: "🍮" },
+    ],
+  },
+  {
+    id: 3, name: "Ti Bonheur", cuisine: "Ayisyen Fusion",
+    rating: 4.9, time: "20-30 min", fee: 2.49, image: "⭐", tax: 0.07,
+    color: "#F4A261", lat: 39.7550, lng: -86.1620,
+    items: [
+      { id: 10, name: "Bouyon Bef", price: 17.99, desc: "Bouyon bèf ak legim", emoji: "🥩" },
+      { id: 11, name: "Mayi Moulen", price: 10.99, desc: "Mayi moulen ak aransò", emoji: "🌽" },
+      { id: 12, name: "Tonmtonm", price: 13.99, desc: "Tonmtonm ak kalalou", emoji: "🥗" },
+    ],
+  },
+];
+
+
+const PLATFORM_FEE = 1.99;
+const DRIVER_TIPS = [0, 1, 2, 3, 5];
+
+// GPS route simulation points (Indianapolis area)
+const GPS_ROUTE = [
+  { lat: 39.7684, lng: -86.1581, label: "Restoran" },
+  { lat: 39.7710, lng: -86.1560, label: "" },
+  { lat: 39.7740, lng: -86.1530, label: "" },
+  { lat: 39.7770, lng: -86.1500, label: "" },
+  { lat: 39.7800, lng: -86.1470, label: "" },
+  { lat: 39.7820, lng: -86.1450, label: "Kliyan" },
+];
+
+// ─── TRANSLATIONS ────────────────────────────────────────────────────────────
+const TRANSLATIONS = {
+  en: {
+    // Role select
+    customer: "I'm a Customer",
+    driver: "I'm a Driver",
+    restaurant: "I'm a Restaurant",
+    platform: "Indianapolis Haitian Food Platform",
+    // Home
+    location: "🇭🇹 Indianapolis, Indiana",
+    search: "Search food or restaurant...",
+    community: "🇭🇹 HAITIAN COMMUNITY INDIANAPOLIS",
+    tagline: "Haitian Food\ndelivered to your door!",
+    freeDelivery: "🎉 Free delivery — first order",
+    restaurants: "🏪 Haitian Restaurants",
+    changeRole: "Change Role",
+    // Menu
+    menu: "🍽️ Menu",
+    addToCart: "View Order",
+    cartLabel: (n, s) => `🛒 View Order — ${n} items • $${s}`,
+    // Order summary
+    orderSummary: "Order Summary",
+    orderType: "📦 Order Type",
+    delivery: "Delivery",
+    pickup: "Pickup",
+    deliveryInfo: "📍 Delivery Info",
+    address: "ADDRESS",
+    apt: "APT / SUITE (Optional)",
+    city: "CITY",
+    state: "STATE",
+    zip: "ZIP",
+    items: "🛒 Your Items",
+    driverTip: "🚗 Driver Tip",
+    noTip: "No tip",
+    total: "💰 Total",
+    subtotal: "Subtotal",
+    restaurantTax: "Restaurant Tax (7%)",
+    platformFee: "Platform Fee",
+    deliveryFee: "Delivery Fee",
+    tipLabel: "Driver Tip",
+    grandTotal: "Grand Total",
+    distribution: "💵 PAYMENT DISTRIBUTION",
+    restaurantEarns: "🍴 Restaurant",
+    driverEarns: "🚗 Driver (70%)",
+    platformEarns: "👑 Platform (30% + fee)",
+    stripeBtn: (t) => `🔒 Go to Stripe — $${t}`,
+    // Checkout
+    securePayment: "🔒 Secure Payment",
+    poweredBy: "Powered by Stripe",
+    totalToPay: "Total to Pay",
+    cardNumber: "CARD NUMBER",
+    expiry: "EXPIRY",
+    payNow: (t) => `🔒 Pay $${t} Now`,
+    encrypted: "Payment protected with SSL 256-bit encryption",
+    notifications: "🔔 Enable Notifications",
+    notifDesc: "Receive order updates via SMS & Email",
+    phone: "PHONE NUMBER (SMS)",
+    email: "EMAIL",
+    // Tracking
+    trackOrder: "📍 Track Your Order",
+    orderReceived: "Order Received",
+    paymentConfirmed: "Payment confirmed",
+    preparing: "Preparing",
+    driverOnWay: "Driver On The Way",
+    driverComing: "Driver coming",
+    delivered: "Delivered!",
+    enjoyMeal: "Enjoy your meal! 🍽️",
+    backHome: "← Back to Home",
+    notifications2: "🔔 Notifications Received",
+    // Driver
+    driverDash: "Driver Dashboard",
+    online: "ONLINE",
+    exit: "Exit",
+    today: "Today",
+    orders: "Orders",
+    availableOrders: "📦 Available Orders",
+    newOrder: "🆕 New",
+    acceptOrder: (e) => `✅ Accept Order — $${e}`,
+    pickup2: "📍 PICKUP",
+    deliver: "🏠 DELIVER TO",
+    photoPickup: "📸 Pickup Photo (Confirm Pickup)",
+    photoPickupDone: "✅ Pickup Photo Taken!",
+    photoDelivery: "📸 Delivery Photo (Confirm Delivery)",
+    deliveryComplete: "Delivery Complete!",
+    youEarned: "You earned:",
+    waitingOrders: "Waiting for orders...",
+    // Restaurant
+    restaurantDash: "🍴 Restaurant Dashboard",
+    activeOrders: "📋 Active Orders",
+    newOrderBadge: "🔥 New",
+    preparingBadge: "✅ Preparing",
+    confirmOrder: "✅ Confirm & Start Preparing",
+    youReceive: "You Receive",
+    driverOnWay2: "🍳 Preparing — Driver on the way!",
+    noOrders: "No orders right now",
+    waitingNotif: "You will receive a notification",
+    notifLog: "🔔 Notifications",
+  },
+  ht: {
+    customer: "Mwen se Kliyan",
+    driver: "Mwen se Chaofè",
+    restaurant: "Mwen se Restoran",
+    platform: "Indianapolis Ayisyen Food Platform",
+    location: "🇭🇹 Indianapolis, Indiana",
+    search: "Chèche manje oswa restoran...",
+    community: "🇭🇹 KOMINOTE AYISYEN INDIANAPOLIS",
+    tagline: "Manje Ayisyen\nlivré lakay ou!",
+    freeDelivery: "🎉 Gratis livrezon — premye kòmand",
+    restaurants: "🏪 Restoran Ayisyen",
+    changeRole: "Chanje Wòl",
+    menu: "🍽️ Meni",
+    addToCart: "Wè Kòmand",
+    cartLabel: (n, s) => `🛒 Wè Kòmand — ${n} atik • $${s}`,
+    orderSummary: "Rezime Kòmand",
+    orderType: "📦 Tip Kòmand",
+    delivery: "Delivery",
+    pickup: "Pickup",
+    deliveryInfo: "📍 Enfòmasyon Livrezon",
+    address: "ADRES",
+    apt: "APT / SUITE (Opsyonèl)",
+    city: "VIL",
+    state: "ETA",
+    zip: "ZIP",
+    items: "🛒 Atik ou yo",
+    driverTip: "🚗 Tip pou Chaofè",
+    noTip: "Pa gen",
+    total: "💰 Total",
+    subtotal: "Subtotal",
+    restaurantTax: "Tax Restoran (7%)",
+    platformFee: "Platform Fee",
+    deliveryFee: "Delivery Fee",
+    tipLabel: "Tip Chaofè",
+    grandTotal: "Grand Total",
+    distribution: "💵 DISTRIBISYON LAJAN",
+    restaurantEarns: "🍴 Restoran",
+    driverEarns: "🚗 Chaofè (70%)",
+    platformEarns: "👑 Platform (30% + fee)",
+    stripeBtn: (t) => `🔒 Ale sou Stripe — $${t}`,
+    securePayment: "🔒 Peman Sekirize",
+    poweredBy: "Powered by Stripe",
+    totalToPay: "Total pou Peye",
+    cardNumber: "NIMEWO KAT",
+    expiry: "EKSPIRE",
+    payNow: (t) => `🔒 Peye $${t} Kounye a`,
+    encrypted: "{L.encrypted}",
+    notifications: "🔔 Aktive Notifikasyon",
+    notifDesc: "Resevwa mizajou sou kòmand ou pa SMS ak Email",
+    phone: "NIMEWO TELEFÒN (SMS)",
+    email: "EMAIL",
+    trackOrder: "📍 Swiv Kòmand ou a",
+    orderReceived: "Kòmand Resevwa",
+    paymentConfirmed: "Peman konfime",
+    preparing: "Ap Prepare",
+    driverOnWay: "Chaofè Sou Wout",
+    driverComing: "Chaofè ap vini",
+    delivered: "Livre!",
+    enjoyMeal: "Bon apeti! 🍽️",
+    backHome: "← Retounen Lakay",
+    notifications2: "🔔 Notifikasyon Resevwa",
+    driverDash: "Chaofè Dashboard",
+    online: "ONLINE",
+    exit: "Sòti",
+    today: "Jodi a",
+    orders: "Kòmand",
+    availableOrders: "📦 Kòmand Disponib",
+    newOrder: "🆕 Nouvo",
+    acceptOrder: (e) => `✅ Aksepte Kòmand — $${e}`,
+    pickup2: "📍 PRAN NAN",
+    deliver: "🏠 LIVRE NAN",
+    photoPickup: "{L.photoPickup}",
+    photoPickupDone: "{L.photoPickupDone}",
+    photoDelivery: "{L.photoDelivery}",
+    deliveryComplete: "Livrezon Konplè!",
+    youEarned: "Ou touche:",
+    waitingOrders: "W ap tann kòmand...",
+    restaurantDash: "🍴 Restoran Dashboard",
+    activeOrders: "📋 Kòmand Aktif",
+    newOrderBadge: "🔥 Nouvo",
+    preparingBadge: "✅ Prepare",
+    confirmOrder: "{L.confirmOrder}",
+    youReceive: "Ou Resevwa",
+    driverOnWay2: "🍳 Ap prepare — Chaofè sou wout!",
+    noOrders: "Pa gen kòmand pou kounye a",
+    waitingNotif: "W ap resevwa yon notifikasyon",
+    notifLog: "🔔 Notifikasyon",
+  },
+  es: {
+    customer: "Soy Cliente",
+    driver: "Soy Conductor",
+    restaurant: "Soy Restaurante",
+    platform: "Plataforma de Comida Haitiana Indianapolis",
+    location: "🇭🇹 Indianapolis, Indiana",
+    search: "Buscar comida o restaurante...",
+    community: "🇭🇹 COMUNIDAD HAITIANA INDIANAPOLIS",
+    tagline: "Comida Haitiana\n¡entregada a tu puerta!",
+    freeDelivery: "🎉 Envío gratis — primer pedido",
+    restaurants: "🏪 Restaurantes Haitianos",
+    changeRole: "Cambiar Rol",
+    menu: "🍽️ Menú",
+    addToCart: "Ver Pedido",
+    cartLabel: (n, s) => `🛒 Ver Pedido — ${n} artículos • $${s}`,
+    orderSummary: "Resumen del Pedido",
+    orderType: "📦 Tipo de Pedido",
+    delivery: "Entrega",
+    pickup: "Recoger",
+    deliveryInfo: "📍 Info de Entrega",
+    address: "DIRECCIÓN",
+    apt: "APT / SUITE (Opcional)",
+    city: "CIUDAD",
+    state: "ESTADO",
+    zip: "CÓDIGO POSTAL",
+    items: "🛒 Tus Artículos",
+    driverTip: "🚗 Propina al Conductor",
+    noTip: "Sin propina",
+    total: "💰 Total",
+    subtotal: "Subtotal",
+    restaurantTax: "Impuesto Restaurante (7%)",
+    platformFee: "Tarifa de Plataforma",
+    deliveryFee: "Tarifa de Entrega",
+    tipLabel: "Propina",
+    grandTotal: "Total General",
+    distribution: "💵 DISTRIBUCIÓN DE PAGOS",
+    restaurantEarns: "🍴 Restaurante",
+    driverEarns: "🚗 Conductor (70%)",
+    platformEarns: "👑 Plataforma (30% + tarifa)",
+    stripeBtn: (t) => `🔒 Ir a Stripe — $${t}`,
+    securePayment: "🔒 Pago Seguro",
+    poweredBy: "Con tecnología de Stripe",
+    totalToPay: "Total a Pagar",
+    cardNumber: "NÚMERO DE TARJETA",
+    expiry: "VENCIMIENTO",
+    payNow: (t) => `🔒 Pagar $${t} Ahora`,
+    encrypted: "Pago protegido con cifrado SSL de 256 bits",
+    notifications: "🔔 Activar Notificaciones",
+    notifDesc: "Recibe actualizaciones por SMS y Email",
+    phone: "NÚMERO DE TELÉFONO (SMS)",
+    email: "CORREO",
+    trackOrder: "📍 Rastrear Pedido",
+    orderReceived: "Pedido Recibido",
+    paymentConfirmed: "Pago confirmado",
+    preparing: "Preparando",
+    driverOnWay: "Conductor en Camino",
+    driverComing: "Conductor viene",
+    delivered: "¡Entregado!",
+    enjoyMeal: "¡Buen provecho! 🍽️",
+    backHome: "← Volver al Inicio",
+    notifications2: "🔔 Notificaciones Recibidas",
+    driverDash: "Panel del Conductor",
+    online: "EN LÍNEA",
+    exit: "Salir",
+    today: "Hoy",
+    orders: "Pedidos",
+    availableOrders: "📦 Pedidos Disponibles",
+    newOrder: "🆕 Nuevo",
+    acceptOrder: (e) => `✅ Aceptar Pedido — $${e}`,
+    pickup2: "📍 RECOGER EN",
+    deliver: "🏠 ENTREGAR EN",
+    photoPickup: "📸 Foto de Recogida",
+    photoPickupDone: "✅ ¡Foto Tomada!",
+    photoDelivery: "📸 Foto de Entrega",
+    deliveryComplete: "¡Entrega Completa!",
+    youEarned: "Ganaste:",
+    waitingOrders: "Esperando pedidos...",
+    restaurantDash: "🍴 Panel del Restaurante",
+    activeOrders: "📋 Pedidos Activos",
+    newOrderBadge: "🔥 Nuevo",
+    preparingBadge: "✅ Preparando",
+    confirmOrder: "✅ Confirmar & Empezar",
+    youReceive: "Recibes",
+    driverOnWay2: "🍳 Preparando — ¡Conductor en camino!",
+    noOrders: "Sin pedidos por ahora",
+    waitingNotif: "Recibirás una notificación",
+    notifLog: "🔔 Notificaciones",
+  },
+  fr: {
+    customer: "Je suis Client",
+    driver: "Je suis Livreur",
+    restaurant: "Je suis Restaurant",
+    platform: "Plateforme de Cuisine Haïtienne Indianapolis",
+    location: "🇭🇹 Indianapolis, Indiana",
+    search: "Rechercher un plat ou restaurant...",
+    community: "🇭🇹 COMMUNAUTÉ HAÏTIENNE INDIANAPOLIS",
+    tagline: "Cuisine Haïtienne\nlivrée chez vous!",
+    freeDelivery: "🎉 Livraison gratuite — première commande",
+    restaurants: "🏪 Restaurants Haïtiens",
+    changeRole: "Changer de Rôle",
+    menu: "🍽️ Menu",
+    addToCart: "Voir Commande",
+    cartLabel: (n, s) => `🛒 Voir Commande — ${n} articles • $${s}`,
+    orderSummary: "Résumé de Commande",
+    orderType: "📦 Type de Commande",
+    delivery: "Livraison",
+    pickup: "À Emporter",
+    deliveryInfo: "📍 Infos de Livraison",
+    address: "ADRESSE",
+    apt: "APT / SUITE (Optionnel)",
+    city: "VILLE",
+    state: "ÉTAT",
+    zip: "CODE POSTAL",
+    items: "🛒 Vos Articles",
+    driverTip: "🚗 Pourboire Livreur",
+    noTip: "Sans pourboire",
+    total: "💰 Total",
+    subtotal: "Sous-total",
+    restaurantTax: "Taxe Restaurant (7%)",
+    platformFee: "Frais de Plateforme",
+    deliveryFee: "Frais de Livraison",
+    tipLabel: "Pourboire",
+    grandTotal: "Total Général",
+    distribution: "💵 RÉPARTITION DES PAIEMENTS",
+    restaurantEarns: "🍴 Restaurant",
+    driverEarns: "🚗 Livreur (70%)",
+    platformEarns: "👑 Plateforme (30% + frais)",
+    stripeBtn: (t) => `🔒 Payer via Stripe — $${t}`,
+    securePayment: "🔒 Paiement Sécurisé",
+    poweredBy: "Propulsé par Stripe",
+    totalToPay: "Total à Payer",
+    cardNumber: "NUMÉRO DE CARTE",
+    expiry: "EXPIRATION",
+    payNow: (t) => `🔒 Payer $${t} Maintenant`,
+    encrypted: "Paiement protégé par chiffrement SSL 256 bits",
+    notifications: "🔔 Activer les Notifications",
+    notifDesc: "Recevez des mises à jour par SMS et Email",
+    phone: "NUMÉRO DE TÉLÉPHONE (SMS)",
+    email: "EMAIL",
+    trackOrder: "📍 Suivre Votre Commande",
+    orderReceived: "Commande Reçue",
+    paymentConfirmed: "Paiement confirmé",
+    preparing: "En Préparation",
+    driverOnWay: "Livreur en Route",
+    driverComing: "Livreur arrive",
+    delivered: "Livré!",
+    enjoyMeal: "Bon appétit! 🍽️",
+    backHome: "← Retour à l'Accueil",
+    notifications2: "🔔 Notifications Reçues",
+    driverDash: "Tableau de Bord Livreur",
+    online: "EN LIGNE",
+    exit: "Quitter",
+    today: "Aujourd'hui",
+    orders: "Commandes",
+    availableOrders: "📦 Commandes Disponibles",
+    newOrder: "🆕 Nouveau",
+    acceptOrder: (e) => `✅ Accepter — $${e}`,
+    pickup2: "📍 RÉCUPÉRER À",
+    deliver: "🏠 LIVRER À",
+    photoPickup: "📸 Photo de Ramassage",
+    photoPickupDone: "✅ Photo Prise!",
+    photoDelivery: "📸 Photo de Livraison",
+    deliveryComplete: "Livraison Terminée!",
+    youEarned: "Vous avez gagné:",
+    waitingOrders: "En attente de commandes...",
+    restaurantDash: "🍴 Tableau de Bord Restaurant",
+    activeOrders: "📋 Commandes Actives",
+    newOrderBadge: "🔥 Nouveau",
+    preparingBadge: "✅ En Préparation",
+    confirmOrder: "✅ Confirmer & Commencer",
+    youReceive: "Vous Recevez",
+    driverOnWay2: "🍳 En préparation — Livreur en route!",
+    noOrders: "Pas de commandes pour l'instant",
+    waitingNotif: "Vous recevrez une notification",
+    notifLog: "🔔 Notifications",
+  },
+  pt: {
+    customer: "Sou Cliente",
+    driver: "Sou Entregador",
+    restaurant: "Sou Restaurante",
+    platform: "Plataforma de Comida Haitiana Indianapolis",
+    location: "🇭🇹 Indianapolis, Indiana",
+    search: "Pesquisar comida ou restaurante...",
+    community: "🇭🇹 COMUNIDADE HAITIANA INDIANAPOLIS",
+    tagline: "Comida Haitiana\nentregue na sua porta!",
+    freeDelivery: "🎉 Entrega grátis — primeiro pedido",
+    restaurants: "🏪 Restaurantes Haitianos",
+    changeRole: "Mudar Papel",
+    menu: "🍽️ Cardápio",
+    addToCart: "Ver Pedido",
+    cartLabel: (n, s) => `🛒 Ver Pedido — ${n} itens • $${s}`,
+    orderSummary: "Resumo do Pedido",
+    orderType: "📦 Tipo de Pedido",
+    delivery: "Entrega",
+    pickup: "Retirada",
+    deliveryInfo: "📍 Info de Entrega",
+    address: "ENDEREÇO",
+    apt: "APT / SUITE (Opcional)",
+    city: "CIDADE",
+    state: "ESTADO",
+    zip: "CEP",
+    items: "🛒 Seus Itens",
+    driverTip: "🚗 Gorjeta ao Entregador",
+    noTip: "Sem gorjeta",
+    total: "💰 Total",
+    subtotal: "Subtotal",
+    restaurantTax: "Imposto Restaurante (7%)",
+    platformFee: "Taxa da Plataforma",
+    deliveryFee: "Taxa de Entrega",
+    tipLabel: "Gorjeta",
+    grandTotal: "Total Geral",
+    distribution: "💵 DISTRIBUIÇÃO DE PAGAMENTOS",
+    restaurantEarns: "🍴 Restaurante",
+    driverEarns: "🚗 Entregador (70%)",
+    platformEarns: "👑 Plataforma (30% + taxa)",
+    stripeBtn: (t) => `🔒 Ir para Stripe — $${t}`,
+    securePayment: "🔒 Pagamento Seguro",
+    poweredBy: "Desenvolvido por Stripe",
+    totalToPay: "Total a Pagar",
+    cardNumber: "NÚMERO DO CARTÃO",
+    expiry: "VALIDADE",
+    payNow: (t) => `🔒 Pagar $${t} Agora`,
+    encrypted: "Pagamento protegido com criptografia SSL 256 bits",
+    notifications: "🔔 Ativar Notificações",
+    notifDesc: "Receba atualizações por SMS e Email",
+    phone: "NÚMERO DE TELEFONE (SMS)",
+    email: "EMAIL",
+    trackOrder: "📍 Rastrear Pedido",
+    orderReceived: "Pedido Recebido",
+    paymentConfirmed: "Pagamento confirmado",
+    preparing: "Preparando",
+    driverOnWay: "Entregador a Caminho",
+    driverComing: "Entregador vindo",
+    delivered: "Entregue!",
+    enjoyMeal: "Bom apetite! 🍽️",
+    backHome: "← Voltar ao Início",
+    notifications2: "🔔 Notificações Recebidas",
+    driverDash: "Painel do Entregador",
+    online: "ON-LINE",
+    exit: "Sair",
+    today: "Hoje",
+    orders: "Pedidos",
+    availableOrders: "📦 Pedidos Disponíveis",
+    newOrder: "🆕 Novo",
+    acceptOrder: (e) => `✅ Aceitar Pedido — $${e}`,
+    pickup2: "📍 RETIRAR EM",
+    deliver: "🏠 ENTREGAR EM",
+    photoPickup: "📸 Foto de Coleta",
+    photoPickupDone: "✅ Foto Tirada!",
+    photoDelivery: "📸 Foto de Entrega",
+    deliveryComplete: "Entrega Completa!",
+    youEarned: "Você ganhou:",
+    waitingOrders: "Aguardando pedidos...",
+    restaurantDash: "🍴 Painel do Restaurante",
+    activeOrders: "📋 Pedidos Ativos",
+    newOrderBadge: "🔥 Novo",
+    preparingBadge: "✅ Preparando",
+    confirmOrder: "✅ Confirmar & Começar",
+    youReceive: "Você Recebe",
+    driverOnWay2: "🍳 Preparando — Entregador a caminho!",
+    noOrders: "Sem pedidos por enquanto",
+    waitingNotif: "Você receberá uma notificação",
+    notifLog: "🔔 Notificações",
+  },
+};
+
+// Detect browser language
+function detectLang() {
+  const nav = navigator.language || navigator.userLanguage || "en";
+  const code = nav.toLowerCase().substring(0, 2);
+  const map = { en: "en", ht: "ht", fr: "fr", es: "es", pt: "pt" };
+  // Special case: French from Haiti
+  if (nav.toLowerCase().includes("ht")) return "ht";
+  return map[code] || "en";
+}
+
+const T = {
+  bg: "#F8F9FF",
+  surface: "#FFFFFF",
+  card: "#FFFFFF",
+  border: "#E2E6F0",
+  primary: "#003F87",
+  primaryDark: "#002D63",
+  accent: "#D01C1F",
+  accentDark: "#A81518",
+  green: "#16A34A",
+  red: "#D01C1F",
+  text: "#0D1B3E",
+  muted: "#6B7893",
+  font: "'DM Sans', sans-serif",
+};
+
+const css = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #EEF2FF; }
+  ::-webkit-scrollbar { width: 0; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
+  @keyframes ping { 0%{transform:scale(1);opacity:1} 75%,100%{transform:scale(2.2);opacity:0} }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes notif { 0%{transform:translateY(-80px);opacity:0} 15%{transform:translateY(0);opacity:1} 85%{transform:translateY(0);opacity:1} 100%{transform:translateY(-80px);opacity:0} }
+
+  .slide-up { animation: slideUp 0.4s ease forwards; }
+  .fade-in { animation: fadeIn 0.3s ease forwards; }
+  .notif-anim { animation: notif 4s ease forwards; }
+  .pulse { animation: pulse 2s infinite; }
+  .ping { animation: ping 1.5s infinite; }
+  .spin { animation: spin 1s linear infinite; }
+
+  .btn-press:active { transform: scale(0.97); }
+  .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+  .card-hover:active { transform: scale(0.98); }
+`;
+
+// ─── MINI MAP ────────────────────────────────────────────────────────────────
+function MiniMap({ driverProgress = 0 }) {
+  const W = 360, H = 200;
+  const minLat = 39.750, maxLat = 39.790, minLng = -86.165, maxLng = -86.140;
+
+  const toXY = (lat, lng) => ({
+    x: ((lng - minLng) / (maxLng - minLng)) * W,
+    y: H - ((lat - minLat) / (maxLat - minLat)) * H,
+  });
+
+  const pts = GPS_ROUTE.map(p => toXY(p.lat, p.lng));
+  const pathD = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+
+  const idx = Math.min(Math.floor(driverProgress * (GPS_ROUTE.length - 1)), GPS_ROUTE.length - 1);
+  const frac = (driverProgress * (GPS_ROUTE.length - 1)) - idx;
+  const curr = idx < GPS_ROUTE.length - 1
+    ? { x: pts[idx].x + (pts[idx + 1].x - pts[idx].x) * frac, y: pts[idx].y + (pts[idx + 1].y - pts[idx].y) * frac }
+    : pts[pts.length - 1];
+
+  const rest = toXY(39.7684, -86.1581);
+  const dest = toXY(39.7820, -86.1450);
+
+  return (
+    <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ borderRadius: 14, background: "#002D63", display: "block" }}>
+      {/* Grid */}
+      {[0.25, 0.5, 0.75].map(f => (
+        <g key={f}>
+          <line x1={W * f} y1={0} x2={W * f} y2={H} stroke="#003F87" strokeWidth={1} />
+          <line x1={0} y1={H * f} x2={W} y2={H * f} stroke="#003F87" strokeWidth={1} />
+        </g>
+      ))}
+      {/* Road dashes */}
+      <path d={pathD} stroke="#004FA8" strokeWidth={10} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={pathD} stroke="#003580" strokeWidth={8} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={pathD} stroke="#6B9FDD" strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="8 6" />
+      {/* Completed route */}
+      {driverProgress > 0 && (
+        <path
+          d={pts.slice(0, idx + 2).map((p, i) => `${i === 0 ? "M" : "L"}${i <= idx ? p.x.toFixed(1) : curr.x.toFixed(1)},${i <= idx ? p.y.toFixed(1) : curr.y.toFixed(1)}`).join(" ")}
+          stroke={T.primary} strokeWidth={4} fill="none" strokeLinecap="round" strokeLinejoin="round"
+        />
+      )}
+      {/* Restaurant pin */}
+      <circle cx={rest.x} cy={rest.y} r={10} fill="#E63946" opacity={0.2} />
+      <circle cx={rest.x} cy={rest.y} r={6} fill="#E63946" />
+      <text x={rest.x} y={rest.y - 14} textAnchor="middle" fontSize={9} fill="#E63946" fontFamily="DM Sans" fontWeight="700">RESTORAN</text>
+      {/* Destination pin */}
+      <circle cx={dest.x} cy={dest.y} r={10} fill={T.green} opacity={0.2} />
+      <circle cx={dest.x} cy={dest.y} r={6} fill={T.green} />
+      <text x={dest.x} y={dest.y - 14} textAnchor="middle" fontSize={9} fill={T.green} fontFamily="DM Sans" fontWeight="700">KLIYAN</text>
+      {/* Driver dot */}
+      {driverProgress > 0 && (
+        <g>
+          <circle cx={curr.x} cy={curr.y} r={14} fill={T.primary} opacity={0.15} />
+          <circle cx={curr.x} cy={curr.y} r={9} fill={T.primary} />
+          <text x={curr.x} y={curr.y + 4} textAnchor="middle" fontSize={10}>🚗</text>
+        </g>
+      )}
+      {/* ETA badge */}
+      <rect x={W - 80} y={8} width={72} height={24} rx={6} fill={T.primary} opacity={0.9} />
+      <text x={W - 44} y={24} textAnchor="middle" fontSize={10} fill="#fff" fontFamily="DM Sans" fontWeight="700">
+        {driverProgress >= 1 ? "Arrive!" : `~${Math.ceil((1 - driverProgress) * 18)} min`}
+      </text>
+    </svg>
+  );
+}
+
+// ─── NOTIFICATION TOAST ──────────────────────────────────────────────────────
+function Toast({ notif }) {
+  if (!notif) return null;
+  return (
+    <div className="notif-anim" style={{
+      position: "fixed", top: 16, left: "50%", transform: "translateX(-50%)",
+      background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14,
+      padding: "12px 20px", zIndex: 9999, width: 340, boxShadow: "0 8px 32px #00000088",
+      display: "flex", alignItems: "center", gap: 12,
+    }}>
+      <div style={{ fontSize: 28 }}>{notif.icon}</div>
+      <div>
+        <div style={{ fontWeight: 700, fontSize: 14, color: T.text }}>{notif.title}</div>
+        <div style={{ fontSize: 12, color: T.muted, marginTop: 2 }}>{notif.body}</div>
+      </div>
+      <div style={{ marginLeft: "auto", background: notif.color || T.primary, borderRadius: 6, padding: "2px 8px", fontSize: 11, color: "#fff", fontWeight: 700 }}>
+        {notif.tag}
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN APP ────────────────────────────────────────────────────────────────
+function RapidDelivri() {
+  const [screen, setScreen] = useState("role");
+  const [role, setRole] = useState(null);
+  const [lang, setLang] = useState(() => detectLang());
+  const L = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  const [adminAuth, setAdminAuth] = useState(false);
+  const [adminPin, setAdminPin] = useState("");
+  const [adminTab, setAdminTab] = useState("dashboard");
+  const ADMIN_PIN = "1804"; // Haitian independence year 🇭🇹
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [cart, setCart] = useState({});
+  const [orderType, setOrderType] = useState("delivery");
+  const [deliveryInfo, setDeliveryInfo] = useState({ address: "", apt: "", city: "Indianapolis", state: "IN", zip: "" });
+  const [tip, setTip] = useState(2);
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderStatus, setOrderStatus] = useState(0);
+  const [driverAccepted, setDriverAccepted] = useState(false);
+  const [photoTaken, setPhotoTaken] = useState({ pickup: false, delivery: false });
+  const [driverProgress, setDriverProgress] = useState(0);
+  const [notif, setNotif] = useState(null);
+  const [notifLog, setNotifLog] = useState([]);
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [notifSent, setNotifSent] = useState(false);
+  const gpsInterval = useRef(null);
+
+  const addToCart = (item) => setCart(p => ({ ...p, [item.id]: (p[item.id] || 0) + 1 }));
+  const removeFromCart = (item) => setCart(p => {
+    const u = { ...p };
+    if (u[item.id] > 1) u[item.id]--; else delete u[item.id];
+    return u;
+  });
+
+  const cartItems = selectedRestaurant ? selectedRestaurant.items.filter(i => cart[i.id]) : [];
+  const subtotal = cartItems.reduce((s, i) => s + i.price * cart[i.id], 0);
+  const tax = subtotal * (selectedRestaurant?.tax || 0.07);
+  const deliveryFee = orderType === "delivery" ? (selectedRestaurant?.fee || 0) : 0;
+  const grandTotal = subtotal + tax + PLATFORM_FEE + deliveryFee + tip;
+  const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
+
+  const pushNotif = (n) => {
+    setNotif(n);
+    setNotifLog(p => [{ ...n, time: new Date().toLocaleTimeString() }, ...p]);
+    setTimeout(() => setNotif(null), 4200);
+  };
+
+  const startGPS = () => {
+    let prog = 0;
+    gpsInterval.current = setInterval(() => {
+      prog += 0.04;
+      setDriverProgress(Math.min(prog, 1));
+      if (prog >= 0.5 && prog < 0.54) pushNotif({ icon: "📍", title: "Chaofè Pre!", body: "Chaofè ou a prèske rive!", tag: "GPS", color: T.primary });
+      if (prog >= 1) {
+        clearInterval(gpsInterval.current);
+        setOrderStatus(4);
+        pushNotif({ icon: "🎉", title: "Livre!", body: "Manje ou livre. Bon apeti!", tag: "DONE", color: T.green });
+      }
+    }, 600);
+  };
+
+  const simulateOrder = () => {
+    setOrderPlaced(true);
+    setScreen("tracking");
+    setOrderStatus(1);
+    pushNotif({ icon: "✅", title: "Kòmand Resevwa!", body: `${selectedRestaurant?.name} ap prepare manje ou`, tag: "SMS", color: T.green });
+
+    setTimeout(() => {
+      setOrderStatus(2);
+      pushNotif({ icon: "🍳", title: "Restoran Konfime", body: "Manje ou ap prepare kounye a", tag: "EMAIL", color: "#F4A261" });
+    }, 3000);
+    setTimeout(() => {
+      setOrderStatus(3);
+      pushNotif({ icon: "🚗", title: "Chaofè Sou Wout!", body: "Jean-Pierre ap vini ak manje ou", tag: "SMS", color: T.primary });
+      startGPS();
+    }, 6000);
+  };
+
+  const s = {
+    app: { fontFamily: T.font, background: T.bg, minHeight: "100vh", color: T.text, maxWidth: 430, margin: "0 auto", position: "relative" },
+    header: { background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "18px 20px 14px", position: "sticky", top: 0, zIndex: 100 },
+    logo: { fontSize: 20, fontWeight: 900, letterSpacing: "-0.5px" },
+    screen: { padding: "0 0 100px" },
+    card: { background: T.card, borderRadius: 18, margin: "10px 16px", border: `1px solid ${T.border}`, overflow: "hidden" },
+    btn: { background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})`, color: "#fff", border: "none", borderRadius: 14, padding: "16px", fontSize: 16, fontWeight: 700, width: "100%", cursor: "pointer", fontFamily: T.font },
+    btnGold: { background: `linear-gradient(135deg, ${T.accent}, ${T.accentDark})`, color: "#0A0A0A", border: "none", borderRadius: 14, padding: "16px", fontSize: 16, fontWeight: 800, width: "100%", cursor: "pointer", fontFamily: T.font },
+    btnOutline: { background: "transparent", color: T.primary, border: `2px solid ${T.primary}`, borderRadius: 14, padding: "14px", fontSize: 15, fontWeight: 700, width: "100%", cursor: "pointer", fontFamily: T.font },
+    btnGhost: { background: T.surface, color: T.text, border: `1px solid ${T.border}`, borderRadius: 14, padding: "14px", fontSize: 15, fontWeight: 600, width: "100%", cursor: "pointer", fontFamily: T.font },
+    input: { background: T.surface, border: `1px solid ${T.border}`, borderRadius: 10, padding: "13px 14px", color: T.text, fontSize: 14, width: "100%", fontFamily: T.font, outline: "none" },
+    label: { fontSize: 11, color: T.muted, marginBottom: 6, display: "block", fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase" },
+    row: { display: "flex", justifyContent: "space-between", alignItems: "center" },
+    tag: { background: T.surface, border: `1px solid ${T.border}`, borderRadius: 8, padding: "4px 10px", fontSize: 12, color: T.muted },
+    title: { fontSize: 20, fontWeight: 800, padding: "20px 16px 8px", letterSpacing: "-0.3px" },
+    divider: { height: 1, background: T.border, margin: "0 20px" },
+  };
+
+  // ── ROLE SELECT ──────────────────────────────────────────────────────────
+  if (screen === "role") return (
+    <div style={{ ...s.app, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "100vh", padding: 24, background: "linear-gradient(160deg, #003F87 0%, #002D63 45%, #D01C1F 100%)" }}>
+      <style>{css}</style>
+      {/* Language selector */}
+      <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 24 }}>
+        {[["en","🇺🇸"],["ht","🇭🇹"],["es","🇪🇸"],["fr","🇫🇷"],["pt","🇧🇷"]].map(([code, flag]) => (
+          <button key={code} onClick={() => setLang(code)} style={{
+            background: lang === code ? "#fff" : "#ffffff22",
+            border: lang === code ? "2px solid #FFD700" : "1px solid #ffffff44",
+            borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 18,
+            fontFamily: T.font, transition: "all 0.2s"
+          }}>{flag}</button>
+        ))}
+      </div>
+      <div className="slide-up" style={{ textAlign: "center", marginBottom: 40 }}>
+        <LogoSVG height={90} style={{ margin: "0 auto 8px" }} />
+        <div style={{ color: "#ffffff99", marginTop: 8, fontSize: 15 }}>{L.platform}</div>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }} className="slide-up">
+        <button className="btn-press" style={{ ...s.btn, background: "#fff", color: T.primary }} onClick={() => { setRole("customer"); setScreen("home"); }}>
+          👤 {L.customer}
+        </button>
+        <button className="btn-press" style={{ ...s.btnGhost, background: "#ffffff22", color: "#fff", border: "1px solid #ffffff44" }} onClick={() => { setRole("driver"); setScreen("driver"); }}>
+          🚗 {L.driver}
+        </button>
+        <button className="btn-press" style={{ ...s.btnGhost, background: "#ffffff22", color: "#fff", border: "1px solid #ffffff44" }} onClick={() => { setRole("restaurant"); setScreen("restaurant"); }}>
+          🍴 {L.restaurant}
+        </button>
+        <button className="btn-press" style={{ background: "#FFD70022", color: "#FFD700", border: "1px solid #FFD70066", borderRadius: 14, padding: "14px", fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: T.font }} onClick={() => { setRole("admin"); setScreen("admin"); }}>
+          👑 Admin / Owner
+        </button>
+      </div>
+    </div>
+  );
+
+  // ── ADMIN DASHBOARD ──────────────────────────────────────────────────────
+  if (screen === "admin") {
+    // Mock data
+    const ORDERS = orderPlaced ? [
+      { id: "RD-2847", customer: "Marie Jean", restaurant: selectedRestaurant?.name || "Kay Manman", total: grandTotal.toFixed(2), status: ["Pending","Confirmed","Preparing","On the Way","Delivered"][orderStatus] || "Pending", driver: "Jean-Pierre", time: "9:25 AM", type: orderType },
+      { id: "RD-2846", customer: "Louis Paul", restaurant: "Lakay Restaurant", total: "28.47", status: "Delivered", driver: "Marc André", time: "8:50 AM", type: "delivery" },
+      { id: "RD-2845", customer: "Nadège Fils", restaurant: "Ti Bonheur", total: "19.98", status: "Delivered", driver: "Pierre Louis", time: "8:10 AM", type: "pickup" },
+    ] : [
+      { id: "RD-2846", customer: "Louis Paul", restaurant: "Lakay Restaurant", total: "28.47", status: "Delivered", driver: "Marc André", time: "8:50 AM", type: "delivery" },
+      { id: "RD-2845", customer: "Nadège Fils", restaurant: "Ti Bonheur", total: "19.98", status: "Delivered", driver: "Pierre Louis", time: "8:10 AM", type: "pickup" },
+    ];
+
+    const DRIVERS = [
+      { name: "Jean-Pierre Moreau", status: "Online", orders: 3, earnings: "$18.40", rating: "4.9", phone: "(317) 555-0101" },
+      { name: "Marc André Baptiste", status: "Online", orders: 5, earnings: "$29.75", rating: "4.8", phone: "(317) 555-0102" },
+      { name: "Pierre Louis Jean", status: "Offline", orders: 0, earnings: "$0.00", rating: "4.7", phone: "(317) 555-0103" },
+    ];
+
+    const CUSTOMERS = [
+      { name: "Marie Jean", orders: 8, total: "$142.30", phone: "(317) 555-0201", joined: "Jan 2024", status: "Active" },
+      { name: "Louis Paul", orders: 3, total: "$67.80", phone: "(317) 555-0202", joined: "Mar 2024", status: "Active" },
+      { name: "Nadège Fils", orders: 12, total: "$218.50", phone: "(317) 555-0203", joined: "Dec 2023", status: "Active" },
+      { name: "Claudette Pierre", orders: 1, total: "$14.99", phone: "(317) 555-0204", joined: "Apr 2024", status: "New" },
+    ];
+
+    const RESTAURANTS_LIST = [
+      { name: "Kay Manman", orders: 45, revenue: "$634.50", status: "Active", rating: "4.8" },
+      { name: "Lakay Restaurant", orders: 32, revenue: "$487.20", status: "Active", rating: "4.6" },
+      { name: "Ti Bonheur", orders: 58, revenue: "$892.30", status: "Active", rating: "4.9" },
+    ];
+
+    const totalRevenue = ORDERS.reduce((s, o) => s + parseFloat(o.total), 0);
+    const platformEarnings = (totalRevenue * 0.15 + ORDERS.length * PLATFORM_FEE).toFixed(2);
+
+    const statusColor = (s) => ({ Delivered: T.green, Pending: "#F59E0B", Confirmed: T.primary, Preparing: "#8B5CF6", "On the Way": T.primary, Offline: T.muted, Online: T.green, Active: T.green, New: T.primary }[s] || T.muted);
+
+    // PIN Login
+    if (!adminAuth) return (
+      <div style={{ ...s.app, display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "100vh", padding: 24, background: "linear-gradient(160deg, #003F87 0%, #002D63 60%, #1a0a00 100%)" }}>
+        <style>{css}</style>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <LogoSVG height={80} style={{ margin: "0 auto 16px" }} />
+          <div style={{ fontSize: 28, fontWeight: 900, color: "#FFD700" }}>👑 Admin Access</div>
+          <div style={{ color: "#ffffff66", fontSize: 14, marginTop: 8 }}>Enter your PIN to continue</div>
+        </div>
+        <div style={{ background: "#ffffff11", borderRadius: 20, padding: 24, border: "1px solid #ffffff22" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 24 }}>
+            {[0,1,2,3].map(i => (
+              <div key={i} style={{ width: 16, height: 16, borderRadius: "50%", background: adminPin.length > i ? "#FFD700" : "#ffffff33", border: "2px solid #ffffff44" }} />
+            ))}
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+            {[1,2,3,4,5,6,7,8,9,"",0,"⌫"].map((k, i) => (
+              <button key={i} onClick={() => {
+                if (k === "⌫") setAdminPin(p => p.slice(0,-1));
+                else if (k !== "" && adminPin.length < 4) {
+                  const np = adminPin + k;
+                  setAdminPin(np);
+                  if (np.length === 4) {
+                    if (np === ADMIN_PIN) { setAdminAuth(true); setAdminPin(""); }
+                    else { setTimeout(() => setAdminPin(""), 500); }
+                  }
+                }
+              }} style={{
+                background: k === "" ? "transparent" : adminPin.length === 4 && adminPin !== ADMIN_PIN ? "#EF444422" : "#ffffff15",
+                border: k === "" ? "none" : "1px solid #ffffff22",
+                borderRadius: 14, padding: "18px", fontSize: k === "⌫" ? 20 : 22,
+                fontWeight: 700, color: "#fff", cursor: k === "" ? "default" : "pointer",
+                fontFamily: T.font, transition: "all 0.15s"
+              }}>{k}</button>
+            ))}
+          </div>
+          {adminPin.length === 4 && adminPin !== ADMIN_PIN && (
+            <div style={{ textAlign: "center", color: "#EF4444", marginTop: 16, fontWeight: 700 }}>❌ PIN Enkòrèk</div>
+          )}
+        </div>
+        <button style={{ background: "none", border: "none", color: "#ffffff66", marginTop: 24, cursor: "pointer", fontFamily: T.font, fontSize: 14 }} onClick={() => setScreen("role")}>← Retounen</button>
+      </div>
+    );
+
+    const TABS = [
+      { id: "dashboard", icon: "📊", label: "Dashboard" },
+      { id: "orders", icon: "📦", label: "Orders" },
+      { id: "customers", icon: "👥", label: "Customers" },
+      { id: "drivers", icon: "🚗", label: "Drivers" },
+      { id: "restaurants", icon: "🍴", label: "Restaurants" },
+      { id: "earnings", icon: "💰", label: "Earnings" },
+    ];
+
+    return (
+      <div style={{ ...s.app, maxWidth: 480 }}>
+        <style>{css}</style>
+        {/* Header */}
+        <div style={{ background: "linear-gradient(135deg, #002D63, #003F87)", padding: "16px 20px", position: "sticky", top: 0, zIndex: 100, borderBottom: `1px solid #003F87` }}>
+          <div style={s.row}>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: "#FFD700" }}>👑 Admin Panel</div>
+              <div style={{ color: "#ffffff66", fontSize: 12 }}>Rapid Delivri Food</div>
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: T.green }} className="pulse" />
+              <span style={{ color: T.green, fontSize: 12, fontWeight: 700 }}>LIVE</span>
+              <button style={{ background: "#ffffff22", border: "none", color: "#fff", borderRadius: 8, padding: "6px 12px", fontSize: 12, cursor: "pointer", fontFamily: T.font }} onClick={() => { setAdminAuth(false); setScreen("role"); }}>Sòti</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Tab Bar */}
+        <div style={{ background: "#fff", borderBottom: `1px solid ${T.border}`, display: "flex", overflowX: "auto", padding: "0 8px" }}>
+          {TABS.map(tab => (
+            <button key={tab.id} onClick={() => setAdminTab(tab.id)} style={{
+              background: "none", border: "none", padding: "12px 14px", cursor: "pointer",
+              fontFamily: T.font, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap",
+              color: adminTab === tab.id ? T.primary : T.muted,
+              borderBottom: adminTab === tab.id ? `3px solid ${T.primary}` : "3px solid transparent",
+              transition: "all 0.2s"
+            }}>{tab.icon} {tab.label}</button>
+          ))}
+        </div>
+
+        <div style={s.screen}>
+
+          {/* ── DASHBOARD TAB ── */}
+          {adminTab === "dashboard" && (
+            <>
+              {/* Stats Grid */}
+              <div style={{ padding: "16px 16px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {[
+                  { icon: "📦", label: "Total Orders", val: ORDERS.length, color: T.primary },
+                  { icon: "💰", label: "Revenue", val: `$${totalRevenue.toFixed(2)}`, color: T.green },
+                  { icon: "👑", label: "My Earnings", val: `$${platformEarnings}`, color: "#FFD700" },
+                  { icon: "👥", label: "Customers", val: CUSTOMERS.length, color: "#8B5CF6" },
+                  { icon: "🚗", label: "Active Drivers", val: DRIVERS.filter(d => d.status === "Online").length, color: T.accent },
+                  { icon: "🍴", label: "Restaurants", val: RESTAURANTS_LIST.length, color: "#F59E0B" },
+                ].map(({ icon, label, val, color }) => (
+                  <div key={label} style={{ background: "#fff", borderRadius: 16, padding: 16, border: `1px solid ${T.border}`, boxShadow: "0 2px 8px #00000008" }}>
+                    <div style={{ fontSize: 24 }}>{icon}</div>
+                    <div style={{ fontWeight: 900, fontSize: 22, color, marginTop: 8 }}>{val}</div>
+                    <div style={{ color: T.muted, fontSize: 12, marginTop: 2 }}>{label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Revenue Breakdown */}
+              <div style={s.title}>💵 Revenue Breakdown</div>
+              <div style={s.card}>
+                <div style={{ padding: 20 }}>
+                  {[
+                    { label: "🍴 Restaurants", val: subtotal > 0 ? subtotal.toFixed(2) : "186.30", pct: 72, color: T.green },
+                    { label: "🚗 Drivers (70%)", val: (deliveryFee * 0.7 > 0 ? deliveryFee * 0.7 : 6.28).toFixed(2), pct: 18, color: T.primary },
+                    { label: "👑 Platform (30%+fee)", val: platformEarnings, pct: 10, color: "#FFD700" },
+                  ].map(({ label, val, pct, color }) => (
+                    <div key={label} style={{ marginBottom: 16 }}>
+                      <div style={{ ...s.row, marginBottom: 6 }}>
+                        <span style={{ fontSize: 14, fontWeight: 600 }}>{label}</span>
+                        <span style={{ fontWeight: 800, color }}>${val}</span>
+                      </div>
+                      <div style={{ background: T.border, borderRadius: 99, height: 8 }}>
+                        <div style={{ background: color, borderRadius: 99, height: 8, width: `${pct}%`, transition: "width 0.5s" }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recent Orders */}
+              <div style={s.title}>🕐 Recent Orders</div>
+              {ORDERS.slice(0,3).map(o => (
+                <div key={o.id} style={s.card}>
+                  <div style={{ padding: "14px 20px" }}>
+                    <div style={s.row}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: 14 }}>#{o.id} — {o.customer}</div>
+                        <div style={{ color: T.muted, fontSize: 12, marginTop: 2 }}>{o.restaurant} • {o.time}</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontWeight: 800, color: T.green }}>${o.total}</div>
+                        <div style={{ fontSize: 11, color: statusColor(o.status), fontWeight: 700, marginTop: 2 }}>● {o.status}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* ── ORDERS TAB ── */}
+          {adminTab === "orders" && (
+            <>
+              <div style={{ padding: "16px 16px 0", display: "flex", gap: 8 }}>
+                {["All","Pending","Active","Delivered"].map(f => (
+                  <div key={f} style={{ background: f === "All" ? T.primary : "#fff", color: f === "All" ? "#fff" : T.muted, border: `1px solid ${T.border}`, borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{f}</div>
+                ))}
+              </div>
+              <div style={s.title}>📦 All Orders ({ORDERS.length})</div>
+              {ORDERS.map(o => (
+                <div key={o.id} style={s.card}>
+                  <div style={{ padding: 20 }}>
+                    <div style={s.row}>
+                      <div style={{ fontWeight: 800, fontSize: 15 }}>#{o.id}</div>
+                      <div style={{ background: statusColor(o.status) + "22", color: statusColor(o.status), borderRadius: 20, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>● {o.status}</div>
+                    </div>
+                    <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                      {[
+                        ["👤 Customer", o.customer],
+                        ["🍴 Restaurant", o.restaurant],
+                        ["🚗 Driver", o.driver],
+                        ["📦 Type", o.type],
+                        ["🕐 Time", o.time],
+                        ["💰 Total", `$${o.total}`],
+                      ].map(([k, v]) => (
+                        <div key={k}>
+                          <div style={{ fontSize: 10, color: T.muted, fontWeight: 700 }}>{k}</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>{v}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* ── CUSTOMERS TAB ── */}
+          {adminTab === "customers" && (
+            <>
+              <div style={s.title}>👥 All Customers ({CUSTOMERS.length})</div>
+              {CUSTOMERS.map(c => (
+                <div key={c.name} style={s.card}>
+                  <div style={{ padding: 20 }}>
+                    <div style={s.row}>
+                      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                        <div style={{ width: 44, height: 44, borderRadius: "50%", background: T.primary + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>👤</div>
+                        <div>
+                          <div style={{ fontWeight: 800, fontSize: 15 }}>{c.name}</div>
+                          <div style={{ color: T.muted, fontSize: 12, marginTop: 2 }}>{c.phone}</div>
+                          <div style={{ color: T.muted, fontSize: 12 }}>Joined {c.joined}</div>
+                        </div>
+                      </div>
+                      <div style={{ background: statusColor(c.status) + "22", color: statusColor(c.status), borderRadius: 20, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>{c.status}</div>
+                    </div>
+                    <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, borderTop: `1px solid ${T.border}`, paddingTop: 16 }}>
+                      <div style={{ textAlign: "center", background: T.primary + "11", borderRadius: 10, padding: 12 }}>
+                        <div style={{ fontWeight: 900, fontSize: 20, color: T.primary }}>{c.orders}</div>
+                        <div style={{ color: T.muted, fontSize: 11 }}>Total Orders</div>
+                      </div>
+                      <div style={{ textAlign: "center", background: T.green + "11", borderRadius: 10, padding: 12 }}>
+                        <div style={{ fontWeight: 900, fontSize: 20, color: T.green }}>{c.total}</div>
+                        <div style={{ color: T.muted, fontSize: 11 }}>Total Spent</div>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                      <button style={{ flex: 1, background: T.primary, color: "#fff", border: "none", borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: T.font }}>📱 SMS</button>
+                      <button style={{ flex: 1, background: T.surface, color: T.primary, border: `1px solid ${T.border}`, borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: T.font }}>🚫 Block</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* ── DRIVERS TAB ── */}
+          {adminTab === "drivers" && (
+            <>
+              <div style={s.title}>🚗 All Drivers ({DRIVERS.length})</div>
+              {DRIVERS.map(d => (
+                <div key={d.name} style={s.card}>
+                  <div style={{ padding: 20 }}>
+                    <div style={s.row}>
+                      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                        <div style={{ width: 44, height: 44, borderRadius: "50%", background: T.accent + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>🚗</div>
+                        <div>
+                          <div style={{ fontWeight: 800, fontSize: 15 }}>{d.name}</div>
+                          <div style={{ color: T.muted, fontSize: 12, marginTop: 2 }}>{d.phone}</div>
+                          <div style={{ color: "#FFD700", fontSize: 12 }}>⭐ {d.rating}</div>
+                        </div>
+                      </div>
+                      <div style={{ background: statusColor(d.status) + "22", color: statusColor(d.status), borderRadius: 20, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>● {d.status}</div>
+                    </div>
+                    <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, borderTop: `1px solid ${T.border}`, paddingTop: 16 }}>
+                      <div style={{ textAlign: "center", background: T.primary + "11", borderRadius: 10, padding: 12 }}>
+                        <div style={{ fontWeight: 900, fontSize: 20, color: T.primary }}>{d.orders}</div>
+                        <div style={{ color: T.muted, fontSize: 11 }}>Today's Orders</div>
+                      </div>
+                      <div style={{ textAlign: "center", background: T.green + "11", borderRadius: 10, padding: 12 }}>
+                        <div style={{ fontWeight: 900, fontSize: 20, color: T.green }}>{d.earnings}</div>
+                        <div style={{ color: T.muted, fontSize: 11 }}>Today's Earnings</div>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                      <button style={{ flex: 1, background: T.primary, color: "#fff", border: "none", borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: T.font }}>📱 Contact</button>
+                      <button style={{ flex: 1, background: T.accent + "22", color: T.accent, border: `1px solid ${T.accent}44`, borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: T.font }}>🚫 Suspend</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div style={{ padding: "8px 16px 16px" }}>
+                <button style={{ ...s.btn }}>+ Add New Driver</button>
+              </div>
+            </>
+          )}
+
+          {/* ── RESTAURANTS TAB ── */}
+          {adminTab === "restaurants" && (
+            <>
+              <div style={s.title}>🍴 Partner Restaurants ({RESTAURANTS_LIST.length})</div>
+              {RESTAURANTS_LIST.map(r => (
+                <div key={r.name} style={s.card}>
+                  <div style={{ padding: 20 }}>
+                    <div style={s.row}>
+                      <div style={{ fontWeight: 800, fontSize: 16 }}>{r.name}</div>
+                      <div style={{ background: T.green + "22", color: T.green, borderRadius: 20, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>● {r.status}</div>
+                    </div>
+                    <div style={{ color: "#FFD700", fontSize: 13, marginTop: 4 }}>⭐ {r.rating}</div>
+                    <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, borderTop: `1px solid ${T.border}`, paddingTop: 16 }}>
+                      <div style={{ textAlign: "center", background: T.primary + "11", borderRadius: 10, padding: 12 }}>
+                        <div style={{ fontWeight: 900, fontSize: 20, color: T.primary }}>{r.orders}</div>
+                        <div style={{ color: T.muted, fontSize: 11 }}>Total Orders</div>
+                      </div>
+                      <div style={{ textAlign: "center", background: T.green + "11", borderRadius: 10, padding: 12 }}>
+                        <div style={{ fontWeight: 900, fontSize: 20, color: T.green }}>{r.revenue}</div>
+                        <div style={{ color: T.muted, fontSize: 11 }}>Revenue</div>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                      <button style={{ flex: 1, background: T.primary, color: "#fff", border: "none", borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: T.font }}>✏️ Edit Menu</button>
+                      <button style={{ flex: 1, background: T.accent + "22", color: T.accent, border: `1px solid ${T.accent}44`, borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: T.font }}>⏸ Pause</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div style={{ padding: "8px 16px 16px" }}>
+                <button style={{ ...s.btn }}>+ Add New Restaurant</button>
+              </div>
+            </>
+          )}
+
+          {/* ── EARNINGS TAB ── */}
+          {adminTab === "earnings" && (
+            <>
+              <div style={s.title}>💰 My Earnings</div>
+              <div style={{ margin: "0 16px", background: "linear-gradient(135deg, #003F87, #D01C1F)", borderRadius: 20, padding: 24, textAlign: "center" }}>
+                <div style={{ color: "#ffffff88", fontSize: 13 }}>Total Platform Earnings</div>
+                <div style={{ fontSize: 42, fontWeight: 900, color: "#FFD700", marginTop: 8 }}>${platformEarnings}</div>
+                <div style={{ color: "#ffffff66", fontSize: 12, marginTop: 8 }}>30% delivery fee + platform fees</div>
+              </div>
+              <div style={{ padding: "16px 16px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {[
+                  { label: "Today", val: `$${platformEarnings}`, icon: "📅" },
+                  { label: "This Week", val: "$42.80", icon: "📆" },
+                  { label: "This Month", val: "$187.50", icon: "🗓️" },
+                  { label: "Total", val: "$1,240.00", icon: "💎" },
+                ].map(({ label, val, icon }) => (
+                  <div key={label} style={{ background: "#fff", borderRadius: 16, padding: 16, border: `1px solid ${T.border}`, textAlign: "center" }}>
+                    <div style={{ fontSize: 24 }}>{icon}</div>
+                    <div style={{ fontWeight: 900, fontSize: 20, color: T.primary, marginTop: 8 }}>{val}</div>
+                    <div style={{ color: T.muted, fontSize: 12, marginTop: 2 }}>{label}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={s.title}>📊 Earnings Breakdown</div>
+              <div style={s.card}>
+                <div style={{ padding: 20 }}>
+                  {[
+                    { label: "Platform Fee (per order)", val: `${ORDERS.length} × $${PLATFORM_FEE} = $${(ORDERS.length * PLATFORM_FEE).toFixed(2)}`, color: T.primary },
+                    { label: "30% of Delivery Fees", val: `$${(deliveryFee * 0.3 || 2.69).toFixed(2)}`, color: "#8B5CF6" },
+                    { label: "Total", val: `$${platformEarnings}`, color: T.green },
+                  ].map(({ label, val, color }) => (
+                    <div key={label} style={{ ...s.row, marginBottom: 16, paddingBottom: 16, borderBottom: `1px solid ${T.border}` }}>
+                      <span style={{ color: T.muted, fontSize: 14 }}>{label}</span>
+                      <span style={{ color, fontWeight: 800, fontSize: 14 }}>{val}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ padding: "0 16px 16px" }}>
+                <button style={{ ...s.btn }}>💳 Withdraw to Bank</button>
+              </div>
+            </>
+          )}
+
+        </div>
+        <Toast notif={notif} />
+      </div>
+    );
+  }
+
+  if (screen === "restaurant") return (
+    <div style={s.app}>
+      <style>{css}</style>
+      <div style={{ ...s.header, background: "#003F87", borderBottom: "1px solid #002D63" }}>
+        <div style={s.row}>
+          <div style={{...s.logo, color:"#fff"}}>🍴 <span style={{ color: "#FFD700" }}>{L.restaurantDash}</span></div>
+          <button style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: 13, fontFamily: T.font }} onClick={() => setScreen("role")}>← Sòti</button>
+        </div>
+      </div>
+      <div style={s.screen}>
+        <div style={s.title}>{L.activeOrders}</div>
+        {orderPlaced ? (
+          <div style={{ ...s.card }} className="slide-up">
+            <div style={{ padding: 20 }}>
+              <div style={s.row}>
+                <div style={{ fontWeight: 800, fontSize: 17 }}>Kòmand #RD-2847</div>
+                <div style={{ background: orderStatus >= 2 ? T.green : T.red, color: "#fff", borderRadius: 20, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>
+                  {orderStatus >= 2 ? L.preparingBadge : L.newOrderBadge}
+                </div>
+              </div>
+              <div style={{ color: T.muted, fontSize: 13, marginTop: 4 }}>Marie Jean • {orderType === "delivery" ? "Delivery" : "Pickup"}</div>
+              <div style={s.divider} />
+              <div style={{ padding: "16px 0" }}>
+                {cartItems.map(item => (
+                  <div key={item.id} style={{ ...s.row, marginBottom: 10 }}>
+                    <span style={{ fontSize: 14 }}>{item.emoji} {item.name} <span style={{ color: T.muted }}>×{cart[item.id]}</span></span>
+                    <span style={{ color: T.accent, fontWeight: 700 }}>${(item.price * cart[item.id]).toFixed(2)}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={s.divider} />
+              <div style={{ ...s.row, paddingTop: 16 }}>
+                <span style={{ fontWeight: 800 }}>{L.youReceive}</span>
+                <span style={{ color: T.green, fontWeight: 900, fontSize: 20 }}>${subtotal.toFixed(2)}</span>
+              </div>
+              {orderStatus < 2 && (
+                <button className="btn-press" style={{ ...s.btnGold, marginTop: 16 }} onClick={() => { setOrderStatus(2); pushNotif({ icon: "🍳", title: "Kòmand Konfime!", body: "Restoran ap prepare", tag: "NOTIF", color: T.green }); }}>
+                  {L.confirmOrder}
+                </button>
+              )}
+              {orderStatus >= 2 && (
+                <div style={{ background: "#0D1F14", borderRadius: 12, padding: 14, marginTop: 16, textAlign: "center", color: T.green, fontSize: 14, fontWeight: 600 }}>
+                  🍳 Ap prepare — Chaofè sou wout!
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div style={{ textAlign: "center", padding: 80, color: T.muted }}>
+            <div style={{ fontSize: 48 }}>📭</div>
+            <div style={{ marginTop: 12, fontSize: 15 }}>{L.noOrders}</div>
+            <div style={{ fontSize: 13, marginTop: 6 }}>{L.waitingNotif}</div>
+          </div>
+        )}
+
+        {/* Notif log */}
+        {notifLog.length > 0 && (
+          <>
+            <div style={s.title}>{L.notifLog}</div>
+            {notifLog.slice(0, 5).map((n, i) => (
+              <div key={i} style={{ ...s.card, margin: "8px 16px" }}>
+                <div style={{ padding: "12px 16px", display: "flex", gap: 12, alignItems: "center" }}>
+                  <span style={{ fontSize: 22 }}>{n.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: 14 }}>{n.title}</div>
+                    <div style={{ color: T.muted, fontSize: 12 }}>{n.body}</div>
+                  </div>
+                  <div style={{ color: T.muted, fontSize: 11 }}>{n.time}</div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+      <Toast notif={notif} />
+    </div>
+  );
+
+  // ── DRIVER DASHBOARD ─────────────────────────────────────────────────────
+  if (screen === "driver") return (
+    <div style={s.app}>
+      <style>{css}</style>
+      <div style={{ ...s.header, background: "#D01C1F", borderBottom: "1px solid #A81518" }}>
+        <div style={s.row}>
+          <div style={{...s.logo, color:"#fff"}}>🚗 <span style={{ color: "#FFD700" }}>Chaofè</span></div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: T.green }} className="pulse" />
+            <span style={{ color: T.green, fontSize: 12, fontWeight: 700 }}>{L.online}</span>
+            <button style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", fontSize: 13, fontFamily: T.font }} onClick={() => setScreen("role")}>Sòti</button>
+          </div>
+        </div>
+      </div>
+      <div style={s.screen}>
+        {/* Earnings */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "16px 16px 0" }}>
+          {[
+            { label: "Jodi a", val: `$${(deliveryFee * 0.7 * 4).toFixed(2)}`, icon: "💵" },
+            { label: "Kòmand", val: driverAccepted ? "1" : "0", icon: "📦" },
+          ].map(({ label, val, icon }) => (
+            <div key={label} style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: 14, padding: 16, textAlign: "center" }}>
+              <div style={{ fontSize: 24 }}>{icon}</div>
+              <div style={{ fontWeight: 900, fontSize: 22, marginTop: 6, color: T.accent }}>{val}</div>
+              <div style={{ color: T.muted, fontSize: 12 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={s.title}>{L.availableOrders}</div>
+        {orderPlaced && !driverAccepted ? (
+          <div style={s.card} className="slide-up">
+            <div style={{ padding: 20 }}>
+              <div style={s.row}>
+                <div style={{ fontWeight: 800, fontSize: 16 }}>Kòmand #RD-2847</div>
+                <div style={{ background: T.accent, color: "#000", borderRadius: 20, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>{L.newOrder}</div>
+              </div>
+              <div style={{ color: T.muted, fontSize: 13, marginTop: 6 }}>{selectedRestaurant?.name} → 3842 N Meridian St</div>
+              <div style={{ ...s.row, marginTop: 16 }}>
+                <div style={s.tag}>📍 2.3 mil</div>
+                <div style={s.tag}>⏱ ~18 min</div>
+                <div style={{ color: T.accent, fontWeight: 800, fontSize: 16 }}>+${(deliveryFee * 0.7).toFixed(2)}</div>
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <MiniMap driverProgress={0} />
+              </div>
+              <button className="btn-press" style={{ ...s.btnGold, marginTop: 16 }} onClick={() => {
+                setDriverAccepted(true);
+                pushNotif({ icon: "🚗", title: "Kòmand Aksepte!", body: "Ou aksepte kòmand #RD-2847", tag: "NOTIF", color: T.primary });
+              }}>
+                ✅ Aksepte Kòmand — ${(deliveryFee * 0.7).toFixed(2)}
+              </button>
+            </div>
+          </div>
+        ) : driverAccepted ? (
+          <div style={s.card} className="slide-up">
+            <div style={{ padding: 20 }}>
+              <div style={{ fontWeight: 800, fontSize: 17, marginBottom: 16 }}>Kòmand #RD-2847</div>
+              <MiniMap driverProgress={driverProgress} />
+              <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <div style={{ background: T.surface, borderRadius: 12, padding: 14 }}>
+                  <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, marginBottom: 6 }}>{L.pickup2}</div>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>{selectedRestaurant?.name}</div>
+                  <div style={{ color: T.muted, fontSize: 12 }}>1204 E Washington St</div>
+                </div>
+                <div style={{ background: T.surface, borderRadius: 12, padding: 14 }}>
+                  <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, marginBottom: 6 }}>{L.deliver}</div>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>3842 N Meridian</div>
+                  <div style={{ color: T.muted, fontSize: 12 }}>Indianapolis IN</div>
+                </div>
+              </div>
+              <div style={{ marginTop: 16 }}>
+                {!photoTaken.pickup ? (
+                  <button className="btn-press" style={s.btnGold} onClick={() => {
+                    setPhotoTaken(p => ({ ...p, pickup: true }));
+                    pushNotif({ icon: "📸", title: "Foto Pickup!", body: "Konfirmasyon pran manje", tag: "SMS", color: T.primary });
+                  }}>📸 Foto Pickup — Konfime Pran</button>
+                ) : !photoTaken.delivery ? (
+                  <>
+                    <div style={{ background: "#0D1F14", borderRadius: 10, padding: 12, textAlign: "center", color: T.green, marginBottom: 12, fontSize: 13, fontWeight: 600 }}>{L.photoPickupDone}</div>
+                    <button className="btn-press" style={s.btn} onClick={() => {
+                      setPhotoTaken(p => ({ ...p, delivery: true }));
+                      pushNotif({ icon: "📸", title: "Delivery Konfime!", body: "Kliyan resevwa manje li", tag: "SMS", color: T.green });
+                    }}>📸 Foto Delivery — Konfime Livrezon</button>
+                  </>
+                ) : (
+                  <div style={{ background: "#0D1F14", borderRadius: 14, padding: 24, textAlign: "center" }}>
+                    <div style={{ fontSize: 40 }}>🎉</div>
+                    <div style={{ color: T.green, fontWeight: 800, fontSize: 18, marginTop: 10 }}>{L.deliveryComplete}</div>
+                    <div style={{ color: T.muted, fontSize: 14, marginTop: 6 }}>{L.youEarned} <span style={{ color: T.accent, fontWeight: 800 }}>${(deliveryFee * 0.7).toFixed(2)}</span></div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{ textAlign: "center", padding: 80, color: T.muted }}>
+            <div style={{ fontSize: 48 }}>🛵</div>
+            <div style={{ marginTop: 12 }} className="pulse">{L.waitingOrders}</div>
+          </div>
+        )}
+      </div>
+      <Toast notif={notif} />
+    </div>
+  );
+
+  // ── TRACKING ──────────────────────────────────────────────────────────────
+  if (screen === "tracking") {
+    const steps = [
+      { icon: "✅", label: L.orderReceived, sub: L.paymentConfirmed, done: orderStatus >= 1 },
+      { icon: "🍳", label: L.preparing, sub: selectedRestaurant?.name, done: orderStatus >= 2 },
+      { icon: "🚗", label: L.driverOnWay, sub: L.driverComing, done: orderStatus >= 3 },
+      { icon: "🎉", label: L.delivered, sub: L.enjoyMeal, done: orderStatus >= 4 },
+    ];
+    return (
+      <div style={s.app}>
+        <style>{css}</style>
+        <div style={s.header}>
+          <LogoSVG height={38} />
+        </div>
+        <div style={s.screen}>
+          <div style={s.title}>{L.trackOrder}</div>
+          <div style={{ padding: "0 16px 16px" }}>
+            <MiniMap driverProgress={driverProgress} />
+          </div>
+          <div style={s.card}>
+            <div style={{ padding: 20 }}>
+              {steps.map((step, i) => (
+                <div key={i} style={{ display: "flex", gap: 16, marginBottom: i < steps.length - 1 ? 24 : 0 }}>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: "50%",
+                      background: step.done ? `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})` : T.surface,
+                      border: `2px solid ${step.done ? T.primary : T.border}`,
+                      display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18,
+                      transition: "all 0.5s ease", flexShrink: 0,
+                    }}>
+                      {step.done ? step.icon : <span style={{ color: T.border }}>○</span>}
+                    </div>
+                    {i < steps.length - 1 && (
+                      <div style={{ width: 2, flex: 1, minHeight: 20, background: step.done ? T.primary : T.border, marginTop: 6, transition: "background 0.5s" }} />
+                    )}
+                  </div>
+                  <div style={{ paddingTop: 10 }}>
+                    <div style={{ fontWeight: step.done ? 700 : 400, color: step.done ? T.text : T.muted, fontSize: 15 }}>{step.label}</div>
+                    <div style={{ color: T.muted, fontSize: 12, marginTop: 2 }}>{step.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Notif Log */}
+          {notifLog.length > 0 && (
+            <>
+              <div style={s.title}>{L.notifications2}</div>
+              {notifLog.map((n, i) => (
+                <div key={i} style={{ ...s.card, margin: "8px 16px" }} className="fade-in">
+                  <div style={{ padding: "12px 16px", display: "flex", gap: 10, alignItems: "center" }}>
+                    <span style={{ fontSize: 20 }}>{n.icon}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700, fontSize: 13 }}>{n.title}</div>
+                      <div style={{ color: T.muted, fontSize: 12 }}>{n.body}</div>
+                    </div>
+                    <div style={{ background: n.color || T.primary, color: "#fff", borderRadius: 6, padding: "2px 8px", fontSize: 10, fontWeight: 700 }}>{n.tag}</div>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+
+          <div style={{ padding: "8px 16px" }}>
+            <button className="btn-press" style={s.btnOutline} onClick={() => setScreen("home")}>{L.backHome}</button>
+          </div>
+        </div>
+        <Toast notif={notif} />
+      </div>
+    );
+  }
+
+  // ── CHECKOUT ──────────────────────────────────────────────────────────────
+  if (screen === "checkout") return (
+    <div style={s.app}>
+      <style>{css}</style>
+      <div style={s.header}>
+        <div style={s.row}>
+          <button onClick={() => setScreen("order-summary")} style={{ background: "none", border: "none", color: T.text, fontSize: 22, cursor: "pointer" }}>←</button>
+          <div style={s.logo}>🔒 <span style={{ color: T.accent }}>{L.securePayment}</span></div>
+          <div />
+        </div>
+      </div>
+      <div style={s.screen}>
+        {/* Notification setup */}
+        {!notifSent && (
+          <div style={{ ...s.card, margin: "16px 16px 0" }}>
+            <div style={{ padding: 20 }}>
+              <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 4 }}>{L.notifications}</div>
+              <div style={{ color: T.muted, fontSize: 13, marginBottom: 16 }}>{L.notifDesc}</div>
+              <label style={s.label}>{L.phone}</label>
+              <input style={{ ...s.input, marginBottom: 12 }} placeholder="+1 (317) 555-0000" value={phone} onChange={e => setPhone(e.target.value)} />
+              <label style={s.label}>{L.email}</label>
+              <input style={{ ...s.input, marginBottom: 16 }} placeholder="ou@gmail.com" value={email} onChange={e => setEmail(e.target.value)} />
+              <div style={{ display: "flex", gap: 10 }}>
+                {[
+                  { icon: "📱", label: "SMS", color: T.green },
+                  { icon: "📧", label: "Email", color: T.primary },
+                  { icon: "🔔", label: "Push", color: T.accent },
+                ].map(({ icon, label, color }) => (
+                  <div key={label} style={{ flex: 1, background: T.surface, borderRadius: 10, padding: "10px 8px", textAlign: "center", border: `1px solid ${color}44` }}>
+                    <div style={{ fontSize: 20 }}>{icon}</div>
+                    <div style={{ fontSize: 11, color, fontWeight: 700, marginTop: 4 }}>{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div style={s.card}>
+          <div style={{ padding: 20 }}>
+            <div style={{ textAlign: "center", marginBottom: 20 }}>
+              <div style={{ fontSize: 40 }}>💳</div>
+              <div style={{ fontWeight: 800, fontSize: 18, marginTop: 8 }}>Stripe Checkout</div>
+              <div style={{ color: T.muted, fontSize: 13 }}>{L.poweredBy}</div>
+            </div>
+            <div style={{ background: T.surface, borderRadius: 12, padding: 16, marginBottom: 20, textAlign: "center" }}>
+              <div style={{ color: T.muted, fontSize: 13 }}>{L.totalToPay}</div>
+              <div style={{ fontSize: 32, fontWeight: 900, color: T.accent, marginTop: 4 }}>${grandTotal.toFixed(2)}</div>
+            </div>
+            <label style={s.label}>{L.cardNumber}</label>
+            <input style={{ ...s.input, marginBottom: 12 }} placeholder="4242 4242 4242 4242" />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+              <div><label style={s.label}>{L.expiry}</label><input style={s.input} placeholder="MM/YY" /></div>
+              <div><label style={s.label}>CVC</label><input style={s.input} placeholder="123" /></div>
+            </div>
+            <button className="btn-press" style={s.btnGold} onClick={() => { setNotifSent(true); simulateOrder(); }}>
+              {L.payNow(grandTotal.toFixed(2))}
+            </button>
+            <div style={{ textAlign: "center", marginTop: 14, color: T.muted, fontSize: 12 }}>
+              Powered by <span style={{ color: T.primary, fontWeight: 700 }}>Stripe</span> • Peman pwoteje
+            </div>
+          </div>
+        </div>
+      </div>
+      <Toast notif={notif} />
+    </div>
+  );
+
+  // ── ORDER SUMMARY ─────────────────────────────────────────────────────────
+  if (screen === "order-summary") return (
+    <div style={s.app}>
+      <style>{css}</style>
+      <div style={s.header}>
+        <div style={s.row}>
+          <button onClick={() => setScreen("menu")} style={{ background: "none", border: "none", color: T.text, fontSize: 22, cursor: "pointer" }}>←</button>
+          <div style={s.logo}>Rezime <span style={{ color: T.accent }}>{L.orderSummary}</span></div>
+          <div />
+        </div>
+      </div>
+      <div style={s.screen}>
+        {/* Order type */}
+        <div style={s.title}>{L.orderType}</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, padding: "0 16px 8px" }}>
+          {[{ id: "delivery", icon: "🚗", label: L.delivery }, { id: "pickup", icon: "🏃", label: L.pickup }].map(t => (
+            <button key={t.id} className="btn-press" onClick={() => setOrderType(t.id)} style={{
+              background: orderType === t.id ? `linear-gradient(135deg, ${T.primary}22, ${T.primaryDark}11)` : T.card,
+              border: `2px solid ${orderType === t.id ? T.primary : T.border}`,
+              borderRadius: 14, padding: "20px 16px", cursor: "pointer", color: T.text, fontFamily: T.font, textAlign: "center",
+            }}>
+              <div style={{ fontSize: 30 }}>{t.icon}</div>
+              <div style={{ fontWeight: 700, marginTop: 8 }}>{t.label}</div>
+            </button>
+          ))}
+        </div>
+
+        {/* Delivery info */}
+        {orderType === "delivery" && (
+          <div style={s.card}>
+            <div style={{ padding: 20 }}>
+              <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16 }}>{L.deliveryInfo}</div>
+              <label style={s.label}>{L.address}</label>
+              <input style={{ ...s.input, marginBottom: 12 }} placeholder="3842 N Meridian St" value={deliveryInfo.address} onChange={e => setDeliveryInfo(p => ({ ...p, address: e.target.value }))} />
+              <label style={s.label}>{L.apt}</label>
+              <input style={{ ...s.input, marginBottom: 12 }} placeholder="Apt 2B" value={deliveryInfo.apt} onChange={e => setDeliveryInfo(p => ({ ...p, apt: e.target.value }))} />
+              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 10 }}>
+                <div><label style={s.label}>{L.city}</label><input style={s.input} value={deliveryInfo.city} onChange={e => setDeliveryInfo(p => ({ ...p, city: e.target.value }))} /></div>
+                <div><label style={s.label}>{L.state}</label><input style={s.input} value="IN" readOnly /></div>
+                <div><label style={s.label}>{L.zip}</label><input style={s.input} placeholder="46204" value={deliveryInfo.zip} onChange={e => setDeliveryInfo(p => ({ ...p, zip: e.target.value }))} /></div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Items */}
+        <div style={s.card}>
+          <div style={{ padding: 20 }}>
+            <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16 }}>{L.items}</div>
+            {cartItems.map(item => (
+              <div key={item.id} style={{ ...s.row, marginBottom: 12 }}>
+                <span>{item.emoji} {item.name} <span style={{ color: T.muted }}>×{cart[item.id]}</span></span>
+                <span style={{ color: T.accent, fontWeight: 700 }}>${(item.price * cart[item.id]).toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Tip */}
+        <div style={s.card}>
+          <div style={{ padding: 20 }}>
+            <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16 }}>{L.driverTip}</div>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {DRIVER_TIPS.map(t => (
+                <button key={t} className="btn-press" onClick={() => setTip(t)} style={{
+                  background: tip === t ? `linear-gradient(135deg, ${T.accent}, ${T.accentDark})` : T.surface,
+                  color: tip === t ? "#000" : T.text,
+                  border: `2px solid ${tip === t ? T.accent : T.border}`,
+                  borderRadius: 10, padding: "10px 16px", cursor: "pointer", fontWeight: 700, fontFamily: T.font, fontSize: 14,
+                }}>
+                  {t === 0 ? L.noTip : `$${t}`}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Totals */}
+        <div style={s.card}>
+          <div style={{ padding: 20 }}>
+            <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16 }}>{L.total}</div>
+            {[
+              [L.subtotal, subtotal, T.text],
+              [L.restaurantTax, tax, T.text],
+              [L.platformFee, PLATFORM_FEE, T.text],
+              ...(orderType === "delivery" ? [[L.deliveryFee, deliveryFee, T.text]] : []),
+              [L.tipLabel, tip, T.text],
+            ].map(([label, val, color]) => (
+              <div key={label} style={{ ...s.row, marginBottom: 12 }}>
+                <span style={{ color: T.muted, fontSize: 14 }}>{label}</span>
+                <span style={{ color, fontSize: 14 }}>${Number(val).toFixed(2)}</span>
+              </div>
+            ))}
+            <div style={{ height: 1, background: T.border, margin: "12px 0" }} />
+            <div style={s.row}>
+              <span style={{ fontWeight: 900, fontSize: 18 }}>{L.grandTotal}</span>
+              <span style={{ fontWeight: 900, fontSize: 26, color: T.accent }}>${grandTotal.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Revenue split */}
+        <div style={{ margin: "0 16px 16px", background: "#0D1527", borderRadius: 14, padding: 16, border: `1px solid #1a2a4a` }}>
+          <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, letterSpacing: "0.8px", marginBottom: 12 }}>{L.distribution}</div>
+          {[
+            { label: L.restaurantEarns, val: subtotal, color: T.green },
+            { label: L.driverEarns, val: deliveryFee * 0.7, color: "#60A5FA" },
+            { label: L.platformEarns, val: deliveryFee * 0.3 + PLATFORM_FEE, color: T.accent },
+          ].map(({ label, val, color }) => (
+            <div key={label} style={{ ...s.row, marginBottom: 10 }}>
+              <span style={{ fontSize: 13, color: T.muted }}>{label}</span>
+              <span style={{ fontSize: 13, color, fontWeight: 700 }}>${val.toFixed(2)}</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ padding: "0 16px 16px" }}>
+          <button className="btn-press" style={s.btnGold} onClick={() => setScreen("checkout")}>
+            {L.stripeBtn(grandTotal.toFixed(2))}
+          </button>
+        </div>
+      </div>
+      <Toast notif={notif} />
+    </div>
+  );
+
+  // ── MENU ──────────────────────────────────────────────────────────────────
+  if (screen === "menu" && selectedRestaurant) return (
+    <div style={s.app}>
+      <style>{css}</style>
+      <div style={{ ...s.header, background: selectedRestaurant.color + "22", borderBottom: `1px solid ${selectedRestaurant.color}44` }}>
+        <div style={s.row}>
+          <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: T.text, fontSize: 22, cursor: "pointer" }}>←</button>
+          <div style={{ ...s.logo, fontSize: 18 }}>{selectedRestaurant.name}</div>
+          {cartCount > 0 && (
+            <button className="btn-press" style={{ background: "#fff", color: T.primary, border: `2px solid ${T.primary}`, borderRadius: 20, padding: "6px 14px", fontWeight: 800, cursor: "pointer", fontFamily: T.font, fontSize: 13, boxShadow: "0 2px 8px #003F8733", textDecoration: "underline" }}
+              onClick={() => setScreen("order-summary")}>
+              🛒 {cartCount}
+            </button>
+          )}
+        </div>
+      </div>
+      <div style={s.screen}>
+        <div style={{ padding: "16px 16px 0", display: "flex", gap: 8 }}>
+          <div style={s.tag}>⭐ {selectedRestaurant.rating}</div>
+          <div style={s.tag}>⏱ {selectedRestaurant.time}</div>
+          <div style={s.tag}>🚗 ${selectedRestaurant.fee}</div>
+        </div>
+        <div style={s.title}>{L.menu}</div>
+        {selectedRestaurant.items.map(item => (
+          <div key={item.id} style={s.card} className="card-hover">
+            <div style={{ padding: 18 }}>
+              <div style={s.row}>
+                <div style={{ display: "flex", gap: 14, flex: 1, alignItems: "center" }}>
+                  <div style={{ fontSize: 36, background: T.surface, borderRadius: 12, padding: "8px 12px", flexShrink: 0 }}>{item.emoji}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: 15 }}>{item.name}</div>
+                    <div style={{ color: T.muted, fontSize: 12, marginTop: 3 }}>{item.desc}</div>
+                    <div style={{ color: T.accent, fontWeight: 800, fontSize: 16, marginTop: 8 }}>${item.price}</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginLeft: 12 }}>
+                  {cart[item.id] > 0 && (
+                    <>
+                      <button className="btn-press" onClick={() => removeFromCart(item)} style={{ background: T.surface, border: `1px solid ${T.border}`, color: T.text, borderRadius: "50%", width: 32, height: 32, fontSize: 18, cursor: "pointer" }}>−</button>
+                      <span style={{ fontWeight: 700, minWidth: 22, textAlign: "center" }}>{cart[item.id]}</span>
+                    </>
+                  )}
+                  <button className="btn-press" onClick={() => addToCart(item)} style={{ background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})`, border: "none", color: "#fff", borderRadius: "50%", width: 36, height: 36, fontSize: 20, cursor: "pointer" }}>+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+        {cartCount > 0 && (
+          <div style={{ padding: "8px 16px 16px" }}>
+            <button className="btn-press" style={s.btnGold} onClick={() => setScreen("order-summary")}>
+              {L.cartLabel(cartCount, subtotal.toFixed(2))}
+            </button>
+          </div>
+        )}
+      </div>
+      <Toast notif={notif} />
+    </div>
+  );
+
+  // ── HOME ──────────────────────────────────────────────────────────────────
+  return (
+    <div style={{ ...s.app, background: "#EEF2FF" }}>
+      <style>{css}</style>
+      <div style={{ ...s.header, background: "linear-gradient(135deg, #003F87, #002D63)", padding: "18px 20px 14px" }}>
+        <div style={s.row}>
+          <div>
+            <LogoSVG height={42} />
+            <div style={{ color: "#ffffff88", fontSize: 12, marginTop: 2 }}>{L.location}</div>
+          </div>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            {/* Language flags */}
+            <div style={{ display: "flex", gap: 4 }}>
+              {[["en","🇺🇸"],["ht","🇭🇹"],["es","🇪🇸"],["fr","🇫🇷"],["pt","🇧🇷"]].map(([code, flag]) => (
+                <button key={code} onClick={() => setLang(code)} style={{
+                  background: lang === code ? "#fff" : "#ffffff22",
+                  border: lang === code ? "2px solid #FFD700" : "1px solid #ffffff33",
+                  borderRadius: 6, padding: "3px 5px", cursor: "pointer", fontSize: 14, lineHeight: 1
+                }}>{flag}</button>
+              ))}
+            </div>
+            <button className="btn-press" style={{ background: "#ffffff22", border: "1px solid #ffffff44", color: "#fff", borderRadius: 10, padding: "8px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: T.font }}
+              onClick={() => setScreen("role")}>
+              {L.changeRole}
+            </button>
+          </div>
+        </div>
+        <div style={{ marginTop: 14, background: "#ffffff15", borderRadius: 12, padding: "12px 16px", display: "flex", gap: 10, alignItems: "center", border: "1px solid #ffffff22" }}>
+          <span style={{ fontSize: 16 }}>🔍</span>
+          <span style={{ color: "#ffffff66", fontSize: 14 }}>{L.search}</span>
+        </div>
+      </div>
+      <div style={s.screen}>
+        {/* Hero banner */}
+        <div style={{ margin: "16px 16px 0", background: "linear-gradient(135deg, #003F87, #D01C1F)", borderRadius: 18, padding: 24 }}>
+          <div style={{ fontSize: 11, color: "#FFD700", fontWeight: 700, letterSpacing: "1px", marginBottom: 8 }}>{L.community}</div>
+          <div style={{ fontWeight: 900, fontSize: 22, lineHeight: 1.3, color: "#fff" }}>{L.tagline.split("\n").map((t,i) => <span key={i}>{t}{i===0&&<br/>}</span>)}</div>
+          <div style={{ color: "#FFD700", fontWeight: 700, marginTop: 12, fontSize: 14 }}>{L.freeDelivery}</div>
+        </div>
+
+        {/* Categories */}
+        <div style={{ padding: "20px 16px 0", display: "flex", gap: 10, overflowX: "auto" }}>
+          {["🍽️", "🥩", "🍚", "🥣", "🍮"].map(c => (
+            <div key={c} style={{ background: "#fff", border: `1px solid ${T.border}`, borderRadius: 20, padding: "8px 16px", fontSize: 16, fontWeight: 600, whiteSpace: "nowrap", cursor: "pointer", flexShrink: 0, color: T.text, boxShadow: "0 1px 4px #00000011" }}>{c}</div>
+          ))}
+        </div>
+
+        <div style={{ ...s.title, color: T.text }}>{L.restaurants}</div>
+        {RESTAURANTS.map(r => (
+          <div key={r.id} style={{ ...s.card, cursor: "pointer", boxShadow: "0 2px 12px #00000011" }} className="card-hover"
+            onClick={() => { setSelectedRestaurant(r); setCart({}); setScreen("menu"); }}>
+            <div style={{ padding: 20 }}>
+              <div style={s.row}>
+                <div style={{ display: "flex", gap: 16, alignItems: "center", flex: 1 }}>
+                  <div style={{ fontSize: 44, background: r.color + "18", borderRadius: 16, padding: "10px 14px", border: `1px solid ${r.color}33`, flexShrink: 0 }}>{r.image}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 800, fontSize: 16, color: T.text }}>{r.name}</div>
+                    <div style={{ color: T.muted, fontSize: 13, marginTop: 3 }}>{r.cuisine}</div>
+                    <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                      <div style={s.tag}>⭐ {r.rating}</div>
+                      <div style={s.tag}>⏱ {r.time}</div>
+                      <div style={s.tag}>🚗 ${r.fee}</div>
+                    </div>
+                  </div>
+                </div>
+                <span style={{ color: T.primary, fontSize: 22 }}>›</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Toast notif={notif} />
+    </div>
+  );
+}
+
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<RapidDelivri />);
+  </script>
+</body>
+</html>
