@@ -23,9 +23,23 @@
   <script type="text/babel">
     const { useState, useRef, useEffect } = React;
 
-    const SUPABASE_URL = "https://rhtbmqixkpkhubmkfefx.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJodGJtcWl4a3BraHVibWtmZWZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTM3NjYsImV4cCI6MjA5MzAyOTc2Nn0.23EJqlFpgauW_iDCYkywCnCzH9QL_Y-Nz_hlD10VN2A";
-    
+    let supabase = null;
+
+const initSupabase = () => {
+  try {
+    if (window.supabase && window.supabase.createClient) {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      console.log("✅ Supabase initialized successfully");
+      return true;
+    } else {
+      console.error("❌ Supabase library not loaded");
+      return false;
+    }
+  } catch (err) {
+    console.error("❌ Supabase init error:", err);
+    return false;
+  }
+};
     let supabase = null;
     
     // Initialize Supabase with error handling
