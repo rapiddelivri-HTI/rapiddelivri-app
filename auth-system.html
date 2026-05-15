@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rapid Delivri Food - Register</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #EEF2FF; min-height: 100vh; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #003F87; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useRef } = React;
+
+    // ─── SUPABASE CONFIG ─────────────────────────────────────────
+    // Replace with your actual Supabase URL and anon key
+    const SUPABASE_URL = window.SUPABASE_URL || 'https://rhtbmqixkpkhubmkfefx.supabase.co';
+    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'YOUR_ANON_KEY_HERE';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const LOGO_IMG = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCADcAZADASIAAhEBAxEB/8QAGwABAAIDAQEAAAAAAAAAAAAAAAUGAwQHAgH/xABNEAABAwMBAwUKCgkBBwUAAAABAAIDBAURBhIhMRNBUWFxBxQWIjKBkaGx0RUXI0JTVFWSk8EzUmJylNLh4vCiJENWY3OCwiU0RYOy/8QAGgEBAAMBAQEAAAAAAAAAAAAAAAECAwQFBv/EADYRAAICAQMBBAYJBAMAAAAAAAABAgMRBBIhMQUTFFEiQWFxkaEjMlJigbHB0fAVU5LhM0Ki/9oADAMBAAIRAxEAPwDpyIiA";
+
+    const T = {
+      bg: "#EEF2FF", surface: "#FFFFFF", card: "#FFFFFF",
+      border: "#E2E6F0", primary: "#003F87", primaryDark: "#002D63",
+      accent: "#D01C1F", accentDark: "#A81518", green: "#16A34A",
+      text: "#0D1B3E", muted: "#6B7893", font: "'DM Sans', sans-serif",
+    };
+
+    const s = {
+      app: { fontFamily: T.font, background: T.bg, minHeight: "100vh", color: T.text, maxWidth: 480, margin: "0 auto" },
+      header: { background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})`, padding: "16px 20px" },
+      card: { background: T.card, borderRadius: 18, margin: "12px 16px", border: `1px solid ${T.border}`, overflow: "hidden", boxShadow: "0 2px 12px #00000011" },
+      input: { background: "#F8FAFF", border: `1px solid ${T.border}`, borderRadius: 10, padding: "13px 14px", color: T.text, fontSize: 14, width: "100%", fontFamily: T.font, outline: "none" },
+      label: { fontSize: 11, color: T.muted, marginBottom: 6, display: "block", fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase" },
+      btn: { background: `linear-gradient(135deg, ${T.primary}, ${T.primaryDark})`, color: "#fff", border: "none", borderRadius: 14, padding: "16px", fontSize: 16, fontWeight: 700, width: "100%", cursor: "pointer", fontFamily: T.font },
+      btnRed: { background: `linear-gradient(135deg, ${T.accent}, ${T.accentDark})`, color: "#fff", border: "none", borderRadius: 14, padding: "16px", fontSize: 16, fontWeight: 700, width: "100%", cursor: "pointer", fontFamily: T.font },
+      btnOutline: { background: "transparent", color: T.primary, border: `2px solid ${T.primary}`, borderRadius: 14, padding: "14px", fontSize: 15, fontWeight: 700, width: "100%", cursor: "pointer", fontFamily: T.font },
+      row: { display: "flex", justifyContent: "space-between", alignItems: "center" },
+      title: { fontSize: 20, fontWeight: 800, padding: "20px 16px 8px" },
+      fileBox: { border: `2px dashed ${T.border}`, borderRadius: 12, padding: 20, textAlign: "center", cursor: "pointer", background: "#F8FAFF" },
+    };
+
+    // ─── FILE UPLOAD COMPONENT ───────────────────────────────────
+    function FileUpload({ label, bucket, path, onUpload, accept = "image/*" }) {
+      const [uploading, setUploading] = useState(false);
+      const [uploaded, setUploaded] = useState(false);
+      const fileRef = useRef();
+
+      const handleUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setUploading(true);
+        try {
+          const ext = file.name.split('.').pop();
+          const filePath = `${path}-${Date.now()}.${ext}`;
+          const { error } = await supabase.storage.from(bucket).upload(filePath, file);
+          if (error) throw error;
+          const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
+          setUploaded(true);
+          onUpload(data.publicUrl || filePath);
+        } catch (err) {
+          alert('Upload failed: ' + err.message);
+        }
+        setUploading(false);
+      };
+
+      return (
+        <div style={{ marginBottom: 16 }}>
+          <label style={s.label}>{label}</label>
+          <div style={{ ...s.fileBox, borderColor: uploaded ? T.green : T.border }} onClick={() => fileRef.current.click()}>
+            <input ref={fileRef} type="file" accept={accept} style={{ display: "none" }} onChange={handleUpload} />
+            {uploading ? <div style={{ color: T.primary }}>⏳ Uploading...</div>
+              : uploaded ? <div style={{ color: T.green }}>✅ Uploaded!</div>
+              : <div style={{ color: T.muted }}>📎 Klike pou upload {label}</div>}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── SUCCESS SCREEN ──────────────────────────────────────────
+    function SuccessScreen({ type, onBack }) {
+      const msgs = {
+        customer: { icon: "🎉", title: "Enskripsyon Konplè!", body: "Kont ou an kreye. Ou ka kòmanse kòmande kounye a!" },
+        driver: { icon: "🚗", title: "Aplikasyon Soumèt!", body: "Nou ap revize dokiman ou yo. Ou ap resevwa yon email lè kont ou apwouve (24-48h)." },
+        restaurant: { icon: "🍴", title: "Aplikasyon Soumèt!", body: "Nou ap revize enfòmasyon restoran ou a. Ou ap resevwa yon email lè kont ou apwouve (24-48h)." },
+      };
+      const m = msgs[type];
+      return (
+        <div style={{ ...s.app, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: 24, textAlign: "center" }}>
+          <div style={{ fontSize: 64, marginBottom: 20 }}>{m.icon}</div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: T.primary, marginBottom: 12 }}>{m.title}</div>
+          <div style={{ color: T.muted, fontSize: 15, lineHeight: 1.6, marginBottom: 32 }}>{m.body}</div>
+          <button style={s.btn} onClick={onBack}>← Retounen</button>
+        </div>
+      );
+    }
+
+    // ─── CUSTOMER REGISTRATION ───────────────────────────────────
+    function CustomerRegister({ onBack, onSuccess }) {
+      const [form, setForm] = useState({ email: "", first_name: "", last_name: "", phone: "", address: "", apartment: "", city: "", state: "IN", zip: "", id_document_type: "state_id" });
+      const [idUrl, setIdUrl] = useState("");
+      const [loading, setLoading] = useState(false);
+      const [errors, setErrors] = useState({});
+
+      const validate = () => {
+        const e = {};
+        if (!form.email) e.email = "Email obligatwa";
+        if (!form.first_name) e.first_name = "Prenon obligatwa";
+        if (!form.last_name) e.last_name = "Non obligatwa";
+        if (!form.address) e.address = "Adres obligatwa";
+        if (!form.city) e.city = "Vil obligatwa";
+        if (!form.zip) e.zip = "ZIP obligatwa";
+        if (!idUrl) e.id = "ID dokiman obligatwa";
+        return e;
+      };
+
+      const submit = async () => {
+        const e = validate();
+        if (Object.keys(e).length > 0) { setErrors(e); return; }
+        setLoading(true);
+        try {
+          const { error } = await supabase.from('customers').insert([{ ...form, id_document_url: idUrl }]);
+          if (error) throw error;
+          onSuccess('customer');
+        } catch (err) {
+          alert('Erè: ' + err.message);
+        }
+        setLoading(false);
+      };
+
+      const inp = (field, placeholder, type = "text") => (
+        <div style={{ marginBottom: 16 }}>
+          <label style={s.label}>{field.replace(/_/g, ' ').toUpperCase()}</label>
+          <input style={{ ...s.input, borderColor: errors[field] ? T.accent : T.border }} type={type}
+            placeholder={placeholder} value={form[field]}
+            onChange={e => { setForm(p => ({ ...p, [field]: e.target.value })); setErrors(p => ({ ...p, [field]: "" })); }} />
+          {errors[field] && <div style={{ color: T.accent, fontSize: 12, marginTop: 4 }}>{errors[field]}</div>}
+        </div>
+      );
+
+      return (
+        <div style={s.app}>
+          <div style={s.header}>
+            <div style={{ ...s.row }}>
+              <button onClick={onBack} style={{ background: "none", border: "none", color: "#fff", fontSize: 22, cursor: "pointer" }}>←</button>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#fff" }}>👤 Enskripsyon Kliyan</div>
+              <div />
+            </div>
+          </div>
+          <div style={{ padding: "0 0 100px" }}>
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: T.primary }}>📋 Enfòmasyon Pèsonèl</div>
+                {inp('first_name', 'Prenon ou')}
+                {inp('last_name', 'Non fanmi ou')}
+                {inp('email', 'email@exemple.com', 'email')}
+                {inp('phone', '(317) 555-0000', 'tel')}
+              </div>
+            </div>
+
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: T.primary }}>📍 Adres</div>
+                {inp('address', '3842 N Meridian St')}
+                {inp('apartment', 'Apt 2B (Opsyonèl)')}
+                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 10 }}>
+                  <div>{inp('city', 'Indianapolis')}</div>
+                  <div>
+                    <label style={s.label}>ETA</label>
+                    <input style={s.input} value="IN" readOnly />
+                  </div>
+                  <div>{inp('zip', '46204')}</div>
+                </div>
+              </div>
+            </div>
+
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: T.primary }}>🪪 Verifikasyon Idantite</div>
+                <label style={s.label}>TIP ID</label>
+                <select style={{ ...s.input, marginBottom: 16 }} value={form.id_document_type}
+                  onChange={e => setForm(p => ({ ...p, id_document_type: e.target.value }))}>
+                  <option value="state_id">State ID</option>
+                  <option value="license">Lisans Kondwi</option>
+                  <option value="passport">Paspo</option>
+                </select>
+                <FileUpload label="Foto ID (Devan)" bucket="customer-documents"
+                  path={`customer-${Date.now()}`} onUpload={setIdUrl} />
+                {errors.id && <div style={{ color: T.accent, fontSize: 12 }}>{errors.id}</div>}
+                <div style={{ background: "#EEF2FF", borderRadius: 10, padding: 12, fontSize: 12, color: T.muted }}>
+                  🔒 Dokiman ou an sekirize epi pa janm pataje ak pèsòn tèt yo.
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding: "0 16px 16px" }}>
+              <button style={s.btn} onClick={submit} disabled={loading}>
+                {loading ? "⏳ Ap anrejistre..." : "✅ Kreye Kont Mwen"}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── DRIVER REGISTRATION ─────────────────────────────────────
+    function DriverRegister({ onBack, onSuccess }) {
+      const [form, setForm] = useState({ email: "", first_name: "", last_name: "", phone: "", address: "", apartment: "", city: "", state: "IN", zip: "", vehicle_make: "", vehicle_model: "", vehicle_year: "", vehicle_color: "", vehicle_plate: "" });
+      const [docs, setDocs] = useState({ license: "", registration: "", insurance: "", selfie: "" });
+      const [loading, setLoading] = useState(false);
+      const [errors, setErrors] = useState({});
+
+      const validate = () => {
+        const e = {};
+        if (!form.email) e.email = "Email obligatwa";
+        if (!form.first_name) e.first_name = "Prenon obligatwa";
+        if (!form.last_name) e.last_name = "Non obligatwa";
+        if (!form.phone) e.phone = "Telefòn obligatwa";
+        if (!form.address) e.address = "Adres obligatwa";
+        if (!form.city) e.city = "Vil obligatwa";
+        if (!form.zip) e.zip = "ZIP obligatwa";
+        if (!docs.license) e.license = "Lisans obligatwa";
+        if (!docs.registration) e.registration = "Anrejistreman obligatwa";
+        if (!docs.insurance) e.insurance = "Asirans obligatwa";
+        if (!docs.selfie) e.selfie = "Selfie obligatwa";
+        return e;
+      };
+
+      const submit = async () => {
+        const e = validate();
+        if (Object.keys(e).length > 0) { setErrors(e); return; }
+        setLoading(true);
+        try {
+          const { data, error } = await supabase.from('drivers').insert([{
+            ...form,
+            drivers_license_url: docs.license,
+            vehicle_registration_url: docs.registration,
+            vehicle_insurance_url: docs.insurance,
+            selfie_url: docs.selfie,
+          }]).select();
+          if (error) throw error;
+          // Add to admin approvals
+          await supabase.from('admin_approvals').insert([{
+            applicant_id: data[0].id,
+            applicant_type: 'driver',
+            applicant_name: `${form.first_name} ${form.last_name}`,
+            status: 'pending'
+          }]);
+          onSuccess('driver');
+        } catch (err) {
+          alert('Erè: ' + err.message);
+        }
+        setLoading(false);
+      };
+
+      const inp = (field, placeholder, type = "text") => (
+        <div style={{ marginBottom: 16 }}>
+          <label style={s.label}>{field.replace(/_/g, ' ').toUpperCase()}</label>
+          <input style={{ ...s.input, borderColor: errors[field] ? T.accent : T.border }} type={type}
+            placeholder={placeholder} value={form[field]}
+            onChange={e => { setForm(p => ({ ...p, [field]: e.target.value })); setErrors(p => ({ ...p, [field]: "" })); }} />
+          {errors[field] && <div style={{ color: T.accent, fontSize: 12, marginTop: 4 }}>{errors[field]}</div>}
+        </div>
+      );
+
+      return (
+        <div style={s.app}>
+          <div style={{ ...s.header, background: `linear-gradient(135deg, ${T.accent}, ${T.accentDark})` }}>
+            <div style={s.row}>
+              <button onClick={onBack} style={{ background: "none", border: "none", color: "#fff", fontSize: 22, cursor: "pointer" }}>←</button>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#fff" }}>🚗 Enskripsyon Chaofè</div>
+              <div />
+            </div>
+          </div>
+          <div style={{ padding: "0 0 100px" }}>
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: T.accent }}>📋 Enfòmasyon Pèsonèl</div>
+                {inp('first_name', 'Prenon ou')}
+                {inp('last_name', 'Non fanmi ou')}
+                {inp('email', 'email@exemple.com', 'email')}
+                {inp('phone', '(317) 555-0000', 'tel')}
+              </div>
+            </div>
+
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: T.accent }}>📍 Adres</div>
+                {inp('address', '3842 N Meridian St')}
+                {inp('apartment', 'Apt 2B (Opsyonèl)')}
+                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 10 }}>
+                  <div>{inp('city', 'Indianapolis')}</div>
+                  <div><label style={s.label}>ETA</label><input style={s.input} value="IN" readOnly /></div>
+                  <div>{inp('zip', '46204')}</div>
+                </div>
+              </div>
+            </div>
+
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: T.accent }}>🚙 Enfòmasyon Machin</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>{inp('vehicle_make', 'Toyota')}</div>
+                  <div>{inp('vehicle_model', 'Camry')}</div>
+                  <div>{inp('vehicle_year', '2020')}</div>
+                  <div>{inp('vehicle_color', 'Blan')}</div>
+                </div>
+                {inp('vehicle_plate', 'ABC 123')}
+              </div>
+            </div>
+
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: T.accent }}>📄 Dokiman Obligatwa</div>
+                <FileUpload label="Lisans Kondwi" bucket="driver-documents"
+                  path="license" onUpload={url => { setDocs(p => ({ ...p, license: url })); setErrors(p => ({ ...p, license: "" })); }} />
+                {errors.license && <div style={{ color: T.accent, fontSize: 12, marginBottom: 8 }}>{errors.license}</div>}
+                <FileUpload label="Anrejistreman Machin" bucket="driver-documents"
+                  path="registration" onUpload={url => { setDocs(p => ({ ...p, registration: url })); setErrors(p => ({ ...p, registration: "" })); }} />
+                {errors.registration && <div style={{ color: T.accent, fontSize: 12, marginBottom: 8 }}>{errors.registration}</div>}
+                <FileUpload label="Asirans Machin" bucket="driver-documents"
+                  path="insurance" onUpload={url => { setDocs(p => ({ ...p, insurance: url })); setErrors(p => ({ ...p, insurance: "" })); }} />
+                {errors.insurance && <div style={{ color: T.accent, fontSize: 12, marginBottom: 8 }}>{errors.insurance}</div>}
+                <FileUpload label="Selfie Ou (Foto Anfas)" bucket="driver-selfies"
+                  path="selfie" onUpload={url => { setDocs(p => ({ ...p, selfie: url })); setErrors(p => ({ ...p, selfie: "" })); }} accept="image/*" />
+                {errors.selfie && <div style={{ color: T.accent, fontSize: 12, marginBottom: 8 }}>{errors.selfie}</div>}
+                <div style={{ background: "#FFF5F5", borderRadius: 10, padding: 12, fontSize: 12, color: T.muted, marginTop: 8 }}>
+                  ⚠️ Tout dokiman ou yo pral revize pa ekip nou an avan apwobasyon (24-48h).
+                </div>
+              </div>
+            </div>
+
+            <div style={{ padding: "0 16px 16px" }}>
+              <button style={s.btnRed} onClick={submit} disabled={loading}>
+                {loading ? "⏳ Ap soumèt..." : "🚗 Soumèt Aplikasyon Mwen"}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── RESTAURANT REGISTRATION ─────────────────────────────────
+    function RestaurantRegister({ onBack, onSuccess }) {
+      const [form, setForm] = useState({ restaurant_name: "", owner_name: "", email: "", phone: "", address: "", apartment: "", city: "", state: "IN", zip: "", ein_number: "" });
+      const [menuUrl, setMenuUrl] = useState("");
+      const [logoUrl, setLogoUrl] = useState("");
+      const [loading, setLoading] = useState(false);
+      const [errors, setErrors] = useState({});
+
+      const validate = () => {
+        const e = {};
+        if (!form.restaurant_name) e.restaurant_name = "Non restoran obligatwa";
+        if (!form.owner_name) e.owner_name = "Non pwopriyetè obligatwa";
+        if (!form.email) e.email = "Email obligatwa";
+        if (!form.address) e.address = "Adres obligatwa";
+        if (!form.city) e.city = "Vil obligatwa";
+        if (!form.zip) e.zip = "ZIP obligatwa";
+        if (!form.ein_number) e.ein_number = "EIN Number obligatwa";
+        if (!menuUrl) e.menu = "Menu PDF obligatwa";
+        return e;
+      };
+
+      const submit = async () => {
+        const e = validate();
+        if (Object.keys(e).length > 0) { setErrors(e); return; }
+        setLoading(true);
+        try {
+          const { data, error } = await supabase.from('restaurants').insert([{
+            ...form, menu_pdf_url: menuUrl, logo_url: logoUrl,
+          }]).select();
+          if (error) throw error;
+          await supabase.from('admin_approvals').insert([{
+            applicant_id: data[0].id,
+            applicant_type: 'restaurant',
+            applicant_name: form.restaurant_name,
+            status: 'pending'
+          }]);
+          onSuccess('restaurant');
+        } catch (err) {
+          alert('Erè: ' + err.message);
+        }
+        setLoading(false);
+      };
+
+      const inp = (field, placeholder, type = "text") => (
+        <div style={{ marginBottom: 16 }}>
+          <label style={s.label}>{field.replace(/_/g, ' ').toUpperCase()}</label>
+          <input style={{ ...s.input, borderColor: errors[field] ? T.accent : T.border }} type={type}
+            placeholder={placeholder} value={form[field]}
+            onChange={e => { setForm(p => ({ ...p, [field]: e.target.value })); setErrors(p => ({ ...p, [field]: "" })); }} />
+          {errors[field] && <div style={{ color: T.accent, fontSize: 12, marginTop: 4 }}>{errors[field]}</div>}
+        </div>
+      );
+
+      return (
+        <div style={s.app}>
+          <div style={{ ...s.header, background: "linear-gradient(135deg, #1a6b3a, #0d4a28)" }}>
+            <div style={s.row}>
+              <button onClick={onBack} style={{ background: "none", border: "none", color: "#fff", fontSize: 22, cursor: "pointer" }}>←</button>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#fff" }}>🍴 Enskripsyon Restoran</div>
+              <div />
+            </div>
+          </div>
+          <div style={{ padding: "0 0 100px" }}>
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: "#1a6b3a" }}>🏪 Enfòmasyon Restoran</div>
+                {inp('restaurant_name', 'Kay Manman Restaurant')}
+                {inp('owner_name', 'Non Pwopriyetè')}
+                {inp('email', 'restaurant@exemple.com', 'email')}
+                {inp('phone', '(317) 555-0000', 'tel')}
+              </div>
+            </div>
+
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: "#1a6b3a" }}>📍 Adres Restoran</div>
+                {inp('address', '1204 E Washington St')}
+                {inp('apartment', 'Suite 100 (Opsyonèl)')}
+                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 10 }}>
+                  <div>{inp('city', 'Indianapolis')}</div>
+                  <div><label style={s.label}>ETA</label><input style={s.input} value="IN" readOnly /></div>
+                  <div>{inp('zip', '46201')}</div>
+                </div>
+              </div>
+            </div>
+
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: "#1a6b3a" }}>💼 Enfòmasyon Biznis</div>
+                <div style={{ marginBottom: 8 }}>
+                  <label style={s.label}>EIN NUMBER (Federal Tax ID)</label>
+                  <input style={{ ...s.input, borderColor: errors.ein_number ? T.accent : T.border }}
+                    placeholder="XX-XXXXXXX" value={form.ein_number}
+                    onChange={e => { setForm(p => ({ ...p, ein_number: e.target.value })); setErrors(p => ({ ...p, ein_number: "" })); }} />
+                  {errors.ein_number && <div style={{ color: T.accent, fontSize: 12, marginTop: 4 }}>{errors.ein_number}</div>}
+                </div>
+                <div style={{ background: "#EFF6FF", borderRadius: 10, padding: 12, fontSize: 12, color: T.muted }}>
+                  ℹ️ EIN number ou a sekirize epi itilize sèlman pou verifikasyon legal.
+                </div>
+              </div>
+            </div>
+
+            <div style={s.card}>
+              <div style={{ padding: 20 }}>
+                <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 16, color: "#1a6b3a" }}>📄 Dokiman</div>
+                <FileUpload label="Menu PDF (Obligatwa)" bucket="restaurant-documents"
+                  path="menu" accept=".pdf,image/*"
+                  onUpload={url => { setMenuUrl(url); setErrors(p => ({ ...p, menu: "" })); }} />
+                {errors.menu && <div style={{ color: T.accent, fontSize: 12, marginBottom: 8 }}>{errors.menu}</div>}
+                <FileUpload label="Logo Restoran (Opsyonèl)" bucket="restaurant-documents"
+                  path="logo" onUpload={setLogoUrl} />
+              </div>
+            </div>
+
+            <div style={{ padding: "0 16px 16px" }}>
+              <button style={{ ...s.btn, background: "linear-gradient(135deg, #1a6b3a, #0d4a28)" }}
+                onClick={submit} disabled={loading}>
+                {loading ? "⏳ Ap soumèt..." : "🍴 Soumèt Aplikasyon Restoran"}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── MAIN APP ────────────────────────────────────────────────
+    function App() {
+      const [screen, setScreen] = useState("home");
+      const [successType, setSuccessType] = useState(null);
+
+      const handleSuccess = (type) => {
+        setSuccessType(type);
+        setScreen("success");
+      };
+
+      if (screen === "success") return <SuccessScreen type={successType} onBack={() => setScreen("home")} />;
+      if (screen === "customer") return <CustomerRegister onBack={() => setScreen("home")} onSuccess={handleSuccess} />;
+      if (screen === "driver") return <DriverRegister onBack={() => setScreen("home")} onSuccess={handleSuccess} />;
+      if (screen === "restaurant") return <RestaurantRegister onBack={() => setScreen("home")} onSuccess={handleSuccess} />;
+
+      return (
+        <div style={{ ...s.app, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+          <div style={{ background: `linear-gradient(160deg, ${T.primary} 0%, ${T.primaryDark} 45%, ${T.accent} 100%)`, padding: "40px 24px", textAlign: "center" }}>
+            <img src={LOGO_IMG} alt="Rapid Delivri Food" style={{ height: 80, width: "auto", margin: "0 auto 16px", display: "block", borderRadius: 8 }} />
+            <div style={{ color: "#ffffff88", fontSize: 14 }}>Indianapolis Haitian Food Platform</div>
+          </div>
+
+          <div style={{ flex: 1, padding: "24px 16px" }}>
+            <div style={{ fontSize: 22, fontWeight: 800, textAlign: "center", marginBottom: 8, color: T.primary }}>
+              Chwazi Kijan Ou Vle Kòmanse
+            </div>
+            <div style={{ color: T.muted, textAlign: "center", fontSize: 14, marginBottom: 24 }}>
+              Kreye kont ou gratis jodi a
+            </div>
+
+            {[
+              { id: "customer", icon: "👤", title: "Mwen se Kliyan", desc: "Kòmande manje Ayisyen livré lakay ou", color: T.primary },
+              { id: "driver", icon: "🚗", title: "Mwen se Chaofè", desc: "Livre manje epi fè lajan - 70% delivery fee", color: T.accent },
+              { id: "restaurant", icon: "🍴", title: "Mwen se Restoran", desc: "Ajoute restoran ou ak meni ou sou platfòm nan", color: "#1a6b3a" },
+            ].map(({ id, icon, title, desc, color }) => (
+              <div key={id} onClick={() => setScreen(id)} style={{ background: "#fff", borderRadius: 18, padding: 20, marginBottom: 14, border: `2px solid ${color}22`, cursor: "pointer", boxShadow: "0 2px 12px #00000011", display: "flex", gap: 16, alignItems: "center" }}>
+                <div style={{ fontSize: 36, background: `${color}15`, borderRadius: 14, padding: "10px 14px", flexShrink: 0 }}>{icon}</div>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 17, color }}>{title}</div>
+                  <div style={{ color: T.muted, fontSize: 13, marginTop: 4 }}>{desc}</div>
+                </div>
+                <div style={{ marginLeft: "auto", color, fontSize: 22 }}>›</div>
+              </div>
+            ))}
+
+            <div style={{ textAlign: "center", marginTop: 20, color: T.muted, fontSize: 13 }}>
+              Ou deja gen yon kont?{" "}
+              <span style={{ color: T.primary, fontWeight: 700, cursor: "pointer" }}>Konekte</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
