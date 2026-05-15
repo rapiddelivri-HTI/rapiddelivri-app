@@ -1,6 +1,9 @@
 {
   "name": "rapiddelivri-app",
   "version": "1.0.0",
+  "scripts": {
+    "build": "echo skip build"
+  },
   "dependencies": {
     "stripe": "^14.0.0"
   }
