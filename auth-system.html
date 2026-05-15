@@ -8,14 +8,11 @@
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: "DM Sans", sans-serif; background: #EEF2FF; min-height: 100vh; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; background: #EEF2FF; min-height: 100vh; }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: #003F87; border-radius: 4px; }
-    @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
-    .slide-up { animation: slideUp 0.3s ease forwards; }
   </style>
 </head>
 <body>
@@ -23,38 +20,21 @@
   <script type="text/babel">
     const { useState, useRef, useEffect } = React;
 
-    let supabase = null;
-
-const initSupabase = () => {
-  try {
-    if (window.supabase && window.supabase.createClient) {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      console.log("✅ Supabase initialized successfully");
-      return true;
-    } else {
-      console.error("❌ Supabase library not loaded");
-      return false;
-    }
-  } catch (err) {
-    console.error("❌ Supabase init error:", err);
-    return false;
-  }
-};
+    const SUPABASE_URL = "https://rhtbmqixkpkhubmkfefx.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJodGJtcWl4a3BraHVibWtmZWZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTM3NjYsImV4cCI6MjA5MzAyOTc2Nn0.23EJqlFpgauW_iDCYkywCnCzH9QL_Y-Nz_hlD10VN2A";
+    
     let supabase = null;
     
-    // Initialize Supabase with error handling
     const initSupabase = () => {
       try {
         if (window.supabase && window.supabase.createClient) {
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-          console.log("✅ Supabase initialized successfully");
+          console.log("✅ Supabase initialized");
           return true;
-        } else {
-          console.error("❌ Supabase library not loaded");
-          return false;
         }
+        return false;
       } catch (err) {
-        console.error("❌ Supabase init error:", err);
+        console.error("Supabase init error:", err);
         return false;
       }
     };
@@ -71,14 +51,15 @@ const initSupabase = () => {
     const inp = {
       background: T.surface, border: `1px solid ${T.border}`,
       borderRadius: 10, padding: "13px 14px", color: T.text,
-      fontSize: 14, width: "100%", fontFamily: "DM Sans", outline: "none",
+      fontSize: 14, width: "100%", fontFamily: "inherit", outline: "none",
       boxSizing: "border-box",
     };
 
     const btn = (bg, color="#fff") => ({
       background: bg, color, border: "none", borderRadius: 14,
       padding: "16px", fontSize: 16, fontWeight: 700, width: "100%",
-      cursor: "pointer", fontFamily: "DM Sans", marginTop: 8,
+      cursor: "pointer", fontFamily: "inherit", marginTop: 8,
+      transition: "opacity 0.2s",
     });
 
     function Header({ title, onBack }) {
@@ -147,13 +128,12 @@ const initSupabase = () => {
         setLoading(true);
         try {
           if (!supabase) throw new Error("System not ready, refresh page");
-          const { data: authData, error: authError } = await supabase.auth.signUp({
+          const { error: authError } = await supabase.auth.signUp({
             email: form.email,
             password: form.password,
             options: { data: { role: "customer", first_name: form.first_name, last_name: form.last_name } }
           });
           if (authError) throw authError;
-
           const { error: dbError } = await supabase.from("customers").insert([{
             email: form.email, first_name: form.first_name, last_name: form.last_name,
             phone: form.phone, address: form.address, apartment: form.apartment,
@@ -170,8 +150,7 @@ const initSupabase = () => {
       const F = (k, ph, type="text") => (
         <div style={{ marginBottom: 14 }}>
           <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", marginBottom: 6 }}>{k.replace(/_/g," ").toUpperCase()}</div>
-          <input style={{...inp, borderColor: errors[k] ? T.accent : T.border}} type={type}
-            placeholder={ph} value={form[k]} onChange={e => set(k, e.target.value)} disabled={loading} />
+          <input style={{...inp, borderColor: errors[k] ? T.accent : T.border}} type={type} placeholder={ph} value={form[k]} onChange={e => set(k, e.target.value)} disabled={loading} />
           {errors[k] && <div style={{color: T.accent, fontSize: 12, marginTop: 4}}>{errors[k]}</div>}
         </div>
       );
@@ -215,7 +194,7 @@ const initSupabase = () => {
               <FileUpload label="Foto ID" bucket="customer-documents" path="customer" onUpload={setIdUrl} />
               {errors.id && <div style={{color:T.accent,fontSize:12}}>{errors.id}</div>}
             </div>
-            <button style={{...btn(`linear-gradient(135deg,${T.primary},${T.primaryDark})`)}}) onClick={submit} disabled={loading}>
+            <button style={{...btn(`linear-gradient(135deg,${T.primary},${T.primaryDark})`)}} onClick={submit} disabled={loading}>
               {loading ? "⏳ Ap kreye kont..." : "✅ Kreye Kont Mwen"}
             </button>
           </div>
@@ -252,7 +231,6 @@ const initSupabase = () => {
             options: { data: { role: "driver" } }
           });
           if (authError) throw authError;
-
           const { data, error: dbError } = await supabase.from("drivers").insert([{
             ...form,
             drivers_license_url: docs.license,
@@ -261,14 +239,13 @@ const initSupabase = () => {
             selfie_url: docs.selfie,
           }]).select();
           if (dbError) throw dbError;
-
           await supabase.from("admin_approvals").insert([{
             applicant_id: data[0].id,
             applicant_type: "driver",
             applicant_name: `${form.first_name} ${form.last_name}`,
             status: "pending"
           }]);
-          alert("✅ Aplikasyon soumèt! Ou ap resevwa yon email lè kont ou apwouve.");
+          alert("✅ Aplikasyon soumèt!");
           window.location.href = "/";
         } catch(err) { alert("Erè: " + err.message); }
         setLoading(false);
@@ -277,8 +254,7 @@ const initSupabase = () => {
       const F = (k, ph, type="text") => (
         <div style={{ marginBottom: 14 }}>
           <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", marginBottom: 6 }}>{k.replace(/_/g," ").toUpperCase()}</div>
-          <input style={{...inp, borderColor: errors[k] ? T.accent : T.border}} type={type}
-            placeholder={ph} value={form[k]} onChange={e => set(k, e.target.value)} disabled={loading} />
+          <input style={{...inp, borderColor: errors[k] ? T.accent : T.border}} type={type} placeholder={ph} value={form[k]} onChange={e => set(k, e.target.value)} disabled={loading} />
           {errors[k] && <div style={{color:T.accent,fontSize:12,marginTop:4}}>{errors[k]}</div>}
         </div>
       );
@@ -363,7 +339,6 @@ const initSupabase = () => {
             options: { data: { role: "restaurant" } }
           });
           if (authError) throw authError;
-
           const { data, error: dbError } = await supabase.from("restaurants").insert([{
             restaurant_name: form.restaurant_name, owner_name: form.owner_name,
             email: form.email, phone: form.phone, address: form.address,
@@ -372,14 +347,13 @@ const initSupabase = () => {
             menu_pdf_url: menuUrl, logo_url: logoUrl,
           }]).select();
           if (dbError) throw dbError;
-
           await supabase.from("admin_approvals").insert([{
             applicant_id: data[0].id,
             applicant_type: "restaurant",
             applicant_name: form.restaurant_name,
             status: "pending"
           }]);
-          alert("✅ Aplikasyon soumèt! Ou ap resevwa yon email lè restoran ou apwouve.");
+          alert("✅ Aplikasyon soumèt!");
           window.location.href = "/";
         } catch(err) { alert("Erè: " + err.message); }
         setLoading(false);
@@ -388,8 +362,7 @@ const initSupabase = () => {
       const F = (k, ph, type="text") => (
         <div style={{ marginBottom: 14 }}>
           <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", marginBottom: 6 }}>{k.replace(/_/g," ").toUpperCase()}</div>
-          <input style={{...inp, borderColor: errors[k] ? T.accent : T.border}} type={type}
-            placeholder={ph} value={form[k]} onChange={e => set(k, e.target.value)} disabled={loading} />
+          <input style={{...inp, borderColor: errors[k] ? T.accent : T.border}} type={type} placeholder={ph} value={form[k]} onChange={e => set(k, e.target.value)} disabled={loading} />
           {errors[k] && <div style={{color:T.accent,fontSize:12,marginTop:4}}>{errors[k]}</div>}
         </div>
       );
@@ -420,7 +393,6 @@ const initSupabase = () => {
             <div style={{ background: "#fff", borderRadius: 16, padding: 20, marginBottom: 14, border: `1px solid ${T.border}` }}>
               <div style={{ fontWeight: 800, color: "#1a6b3a", marginBottom: 16 }}>💼 EIN Number</div>
               {F("ein_number","XX-XXXXXXX")}
-              {errors.ein_number && <div style={{color:T.accent,fontSize:12}}>{errors.ein_number}</div>}
             </div>
             <div style={{ background: "#fff", borderRadius: 16, padding: 20, marginBottom: 14, border: `1px solid ${T.border}` }}>
               <div style={{ fontWeight: 800, color: "#1a6b3a", marginBottom: 16 }}>📄 Dokiman</div>
@@ -436,40 +408,37 @@ const initSupabase = () => {
       );
     }
 
+    function LoadingScreen() {
+      return (
+        <div style={{ maxWidth: 480, margin: "0 auto", fontFamily: "inherit", minHeight: "100vh", background: "linear-gradient(160deg, #003F87 0%, #002D63 45%, #D01C1F 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div style={{ color: "#fff", fontSize: 18, fontWeight: 700 }}>⏳ System Loading...</div>
+          <div style={{ color: "#ffffff88", fontSize: 13, marginTop: 12 }}>Please wait...</div>
+        </div>
+      );
+    }
+
     function App() {
       const [screen, setScreen] = useState("home");
       const [ready, setReady] = useState(false);
 
       useEffect(() => {
-        // Initialize Supabase when app loads
-        const initStart = setTimeout(() => {
+        const timer = setTimeout(() => {
           const success = initSupabase();
           setReady(success);
-          if (!success) {
-            console.error("Supabase failed to initialize");
-            alert("⚠️ System initialization issue. Please refresh the page.");
-          }
         }, 500);
-        return () => clearTimeout(initStart);
+        return () => clearTimeout(timer);
       }, []);
 
-      if (!ready) {
-        return (
-          <div style={{ maxWidth: 480, margin: "0 auto", fontFamily: "DM Sans", minHeight: "100vh", background: "linear-gradient(160deg, #003F87 0%, #002D63 45%, #D01C1F 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
-            <div style={{ color: "#fff", fontSize: 16, fontWeight: 700 }}>⏳ System Loading...</div>
-            <div style={{ color: "#ffffff88", fontSize: 12, marginTop: 8 }}>Please wait...</div>
-          </div>
-        );
-      }
+      if (!ready) return <LoadingScreen />;
 
       if (screen === "customer") return <CustomerRegister onBack={() => setScreen("home")} />;
       if (screen === "driver") return <DriverRegister onBack={() => setScreen("home")} />;
       if (screen === "restaurant") return <RestaurantRegister onBack={() => setScreen("home")} />;
 
       return (
-        <div style={{ maxWidth: 480, margin: "0 auto", fontFamily: "DM Sans", minHeight: "100vh", background: "linear-gradient(160deg, #003F87 0%, #002D63 45%, #D01C1F 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
+        <div style={{ maxWidth: 480, margin: "0 auto", fontFamily: "inherit", minHeight: "100vh", background: "linear-gradient(160deg, #003F87 0%, #002D63 45%, #D01C1F 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
           <img src={LOGO} style={{ width: 160, height: 160, borderRadius: "50%", objectFit: "cover", border: "4px solid #FFD700", marginBottom: 16 }} />
-          <div style={{ color: "#ffffff88", fontSize: 14, marginBottom: 40 }}>Indianapolis Haitian Food Platform 🇭🇹</div>
+          <div style={{ color: "#ffffff88", fontSize: 14, marginBottom: 40, textAlign: "center" }}>Indianapolis Haitian Food Platform 🇭🇹</div>
 
           <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 14 }}>
             {[
@@ -478,7 +447,7 @@ const initSupabase = () => {
               { id: "restaurant", icon: "🍴", title: "Mwen se Restoran", desc: "Ajoute restoran ou sou platfòm nan", color: "transparent", textColor: "#fff", border: "2px solid #FFD700" },
             ].map((item) => (
               <button key={item.id} onClick={() => setScreen(item.id)}
-                style={{ background: item.color, color: item.textColor, border: item.border || "none", borderRadius: 16, padding: "18px 20px", cursor: "pointer", fontFamily: "DM Sans", textAlign: "left", display: "flex", gap: 14, alignItems: "center" }}>
+                style={{ background: item.color, color: item.textColor, border: item.border || "none", borderRadius: 16, padding: "18px 20px", cursor: "pointer", fontFamily: "inherit", textAlign: "left", display: "flex", gap: 14, alignItems: "center" }}>
                 <div style={{ fontSize: 32 }}>{item.icon}</div>
                 <div>
                   <div style={{ fontWeight: 800, fontSize: 16 }}>{item.title}</div>
@@ -499,7 +468,6 @@ const initSupabase = () => {
       );
     }
 
-    // Mount React app
     const root = ReactDOM.createRoot(document.getElementById("root"));
     root.render(<App />);
   </script>
